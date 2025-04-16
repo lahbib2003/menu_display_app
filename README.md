@@ -9,3 +9,4 @@ wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip
 unzip ngrok-stable-linux-arm.zip
 chmod +x ngrok
 ./ngrok config add-authtoken DEIN_TOKEN_HIER
+ngrok auth ::   WHINQSTDABOX3MIKQLAPMLSCAI5M6TWP
