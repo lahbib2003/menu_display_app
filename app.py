@@ -12,6 +12,9 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+USERNAME = 'admin'
+PASSWORD = 'passwort123'
+
 @app.route('/')
 def display():
     files = os.listdir(app.config['UPLOAD_FOLDER'])
@@ -28,35 +31,35 @@ def admin():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if request.form['password'] == 'dein_passwort':
+        if request.form['username'] == USERNAME and request.form['password'] == PASSWORD:
             session['logged_in'] = True
             return redirect(url_for('admin'))
-    return '''
-        <form method="post">
-            Passwort: <input type="password" name="password">
-            <input type="submit" value="Login">
-        </form>
-    '''
+        else:
+            return "Login fehlgeschlagen"
+    return render_template('login.html')
 
 @app.route('/logout')
 def logout():
-    session.pop('logged_in', None)
+    session['logged_in'] = False
     return redirect(url_for('login'))
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
-        return redirect(url_for('admin'))
+        return 'Keine Datei'
     file = request.files['file']
-    if file and allowed_file(file.filename):
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(filepath)
+    if file.filename == '':
+        return 'Keine Datei ausgewählt'
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    file.save(filepath)
     return redirect(url_for('admin'))
 
 @app.route('/delete/<filename>')
 def delete_file(filename):
-    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if os.path.exists(filepath):
+        os.remove(filepath)
     return redirect(url_for('admin'))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0')
