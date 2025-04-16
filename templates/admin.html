@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+</head>
+<body>
+    <h2>Admin-Panel</h2>
+    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+        Datei auswählen: <input type="file" name="file">
+        <input type="submit" value="Hochladen">
+    </form>
+    <a href="{{ url_for('logout') }}">Logout</a>
+    <ul>
+        {% for file in files %}
+            <li>
+                {{ file }} 
+                <a href="{{ url_for('static', filename='uploads/' + file) }}" target="_blank">[Anzeigen]</a>
+                <a href="{{ url_for('delete_file', filename=file) }}">[Löschen]</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
