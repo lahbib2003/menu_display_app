@@ -1,65 +1,82 @@
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
+from flask import Flask, render_template, request, redirect, url_for
 import os
+from werkzeug.utils import secure_filename
+from flask import session, flash
+import random
 
 app = Flask(__name__)
-app.secret_key = 'super-secret-key'  # ändere das!
 
-UPLOAD_FOLDER = os.path.join('static', 'uploads')
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.secret_key = 'supergeheim'  # Für Session
+UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4'}
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'avi'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-USERNAME = 'admin'
-PASSWORD = 'passwort123'
-
 @app.route('/')
-def display():
-    files = os.listdir(app.config['UPLOAD_FOLDER'])
-    return render_template('display.html', files=files)
+def home():
+    return redirect(url_for('login'))
+
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        file = request.files.get('file')
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('admin'))
+    current_text = load_display_text()
+    media_files = os.listdir(app.config['UPLOAD_FOLDER'])
+    return render_template('admin.html', media_files=media_files)
 
-    files = os.listdir(app.config['UPLOAD_FOLDER'])
-    return render_template('admin.html', files=files)
+
+def load_display_text():
+    if os.path.exists(TEXT_FILE):
+        with open(TEXT_FILE, "r", encoding="utf-8") as f:
+            return f.read()
+    return "Willkommen!"
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if request.form['username'] == USERNAME and request.form['password'] == PASSWORD:
+        password = request.form.get('password')
+        if password == 'admin123':  # ← hier Passwort setzen
             session['logged_in'] = True
             return redirect(url_for('admin'))
         else:
-            return "Login fehlgeschlagen"
+            flash('Falsches Passwort!')
     return render_template('login.html')
+TEXT_FILE = "static/display_text.txt"
 
-@app.route('/logout')
-def logout():
-    session['logged_in'] = False
-    return redirect(url_for('login'))
+@app.route("/set_text", methods=["POST"])
+def set_text():
+    text = request.form["display_text"]
+    with open(TEXT_FILE, "w", encoding="utf-8") as f:
+        f.write(text)
+    return redirect("/admin")
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return 'Keine Datei'
-    file = request.files['file']
-    if file.filename == '':
-        return 'Keine Datei ausgewählt'
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(filepath)
-    return redirect(url_for('admin'))
 
-@app.route('/delete/<filename>')
-def delete_file(filename):
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+@app.route('/display')
+def display():
+    files = os.listdir(UPLOAD_FOLDER)
+    image_files = [f for f in files if f.lower().endswith(('jpg', 'jpeg', 'png', 'gif'))]
+    
+    return render_template('display.html', image_files=image_files)
+@app.route("/delete", methods=["POST"])
+def delete_file():
+    filename = request.form["filename"]
+    filepath = os.path.join(UPLOAD_FOLDER, filename)
     if os.path.exists(filepath):
         os.remove(filepath)
-    return redirect(url_for('admin'))
+    return redirect("/admin")
+
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    app.run(debug=True)
