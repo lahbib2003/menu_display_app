@@ -2,7 +2,9 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Unser Menü heute</title>
+
+    <title>Hungrig? Schau, was wir haben!</title>
+   
     <script>
         const duration = {{ duration | safe }};
         console.log("Test Duration:", duration);
@@ -11,7 +13,6 @@
             window.location.href = "/video";
         }, duration * 1000);
     </script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -54,7 +55,7 @@
         }
         
         .logo img {
-            height: 70px;
+            height: 30px;
             width: auto;
         }
         
@@ -68,14 +69,14 @@
             justify-content: space-around;
             gap: 30px;
             margin: 0 auto;
-            height: 100vh;
+            height: auto;
             max-width: 100%;
             align-items: center;
         }
     
         .meal-section {
             background: rgba(255, 255, 255, 0.1);
-            padding: 60px 100px;
+            padding: 60px 50px;
             border-radius: 16px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.3);
             text-align: center;
@@ -98,7 +99,7 @@
             box-shadow: 0 12px 24px rgba(0,0,0,0.5);
         }
     
-        .meal-section h2 {
+        .meal-section h2 {cdcd
             font-size: 48px;
             border-bottom: 3px solid #f8b400;
             padding-bottom: 15px;
@@ -152,13 +153,57 @@
             0% { transform: translateX(0%); }
             100% { transform: translateX(-100%); }
         }
+        .meal-description {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #333;
+        }
+        .qr-code-container {
+            position: fixed;
+            bottom: 50px;
+            right: 30px;
+            text-align: center;
+            z-index: 999;
+            animation: fadeInQR 1.5s ease;
+        }
+        
+        .qr-code-container img {
+            width: 100px;
+            height: auto;
+            opacity: 0.85;
+            transition: transform 0.3s ease;
+        }
+        
+        .qr-code-container img:hover {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        
+        .qr-code-container p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #fff;
+            text-shadow: 1px 1px 3px #000;
+        }
+        
+        @keyframes fadeInQR {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        
     </style>
 </head>
+<div class="qr-code-container">
+    <img src="{{ url_for('static', filename='qrcode.jpeg') }}" alt="QR Code">
+    <p>Für weitere Infos – jetzt scannen!</p>
+</div>
+
 <body>
     <div class="logo">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
     </div>
-    <header>Unser Menü heute</header>
+    <header>Hungrig? Schau, was wir haben</header>
     <div class="meal-container">
         <!-- Low Carbs Section -->
         <div class="meal-section">
@@ -169,7 +214,9 @@
                 {% else %}
                     <p>Kein Bild verfügbar.</p>
                 {% endif %}
+               
             </div>
+            <p class="meal-description">  ⚡ 🍗  Ab 25 g Eiweiß pro  portion </p>
         </div>
 
         <!-- High Protein Section -->
@@ -182,6 +229,7 @@
                     <p>Kein Bild verfügbar.</p>
                 {% endif %}
             </div>
+            <p class="meal-description">  ⚡ 🧬 2,6g   Kohlenhydrate  pro 100 g</p>
         </div>
 
         <!-- Muscle Gainer Section -->
@@ -194,12 +242,15 @@
                     <p>Kein Bild verfügbar.</p>
                 {% endif %}
             </div>
+            <p class="meal-description">  ✅ 🥦 Voller Proteine und Vitamine  </p>
         </div>
+        
     </div>
+    
 
     <div class="ticker">
         <div class="ticker-text">
-            🕒 Öffnungszeiten: Frühstück 08–10 Uhr | Mittag 12–14 Uhr | Abendessen 18–20 Uhr – Guten Appetit! 😋🍗🥦
+            🕒 Öffnungszeiten: MO-Fr 8 uhr Bis 16 uhr  – Guten Appetit! 😋🍗🥦
         </div>
     </div>
 </body>
