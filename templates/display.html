@@ -2,27 +2,34 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title  style="color: black;" > Unser Menü heute</title>
-    <header>Unser Menü heute</header>
-
+    <title>Unser Menü heute</title>
+    <script>
+        const duration = {{ duration | safe }};
+        console.log("Test Duration:", duration);
+    
+        setTimeout(() => {
+            window.location.href = "/video";
+        }, duration * 1000);
+    </script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             font-family: 'Quicksand', sans-serif;
-            background-image: url('https://images.unsplash.com/photo-1600891965059-30de20141a2d'); /* Beispielbild */
+            background-image: url('https://images.unsplash.com/photo-1600891965059-30de20141a2d');
             background-size: cover;
             background-position: center;
             color: #fff;
             overflow: hidden;
         }
-        
+
         .overlay {
             background-color: rgba(0, 0, 0, 0.6);
             padding: 40px;
             height: 100vh;
         }
-        
+
         header {
             text-align: center;
             font-size: 48px;
@@ -31,55 +38,53 @@
             color: #f8b400;
             text-shadow: 2px 2px 5px #000;
         }
-        
+
         .meal-container {
             display: flex;
-            justify-content: space-around; /* Verteilt die Sections gleichmäßig */
-            gap: 30px; /* Abstand zwischen den Sections */
+            justify-content: space-around;
+            gap: 30px;
             margin: 0 auto;
-            height: 100vh; /* Füllt die gesamte Bildschirmhöhe */
-            max-width: 100%; /* Maximale Breite auf 100% setzen */
-            align-items: center; /* Vertikale Zentrierung */
+            height: 100vh;
+            max-width: 100%;
+            align-items: center;
         }
-        
+
         .meal-section {
             background: rgba(255, 255, 255, 0.1);
-            padding: 60px 120px; /* Mehr Padding */
+            padding: 60px 120px;
             border-radius: 16px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.3);
             text-align: center;
             flex: 1;
-            height: 80%; /* Setzt die Höhe der Sektion auf 80% der Containerhöhe */
+            height: 80%;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Vertikale Zentrierung des Inhalts */
+            justify-content: center;
         }
-        
+
         .meal-section h2 {
-            font-size: 48px; /* Größere Schriftgröße */
-            border-bottom: 3px solid #f8b400; /* Dickeren Border */
+            font-size: 48px;
+            border-bottom: 3px solid #f8b400;
             padding-bottom: 15px;
-            margin-bottom: 25px; /* Größerer Abstand zum Bild */
-            color: #fff;
+            margin-bottom: 25px;
+            color: #000;
         }
-        
+
         .image-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            height: 70%; /* Setzt die Höhe der Bildcontainer auf 70% der Sektion */
+            height: 70%;
         }
-        
+
         .image-container img {
-            width: 100%; /* Skaliert das Bild innerhalb des Containers */
-            max-width: 100%; /* Maximale Breite auf 100% setzen */
-            height: auto; /* Bildhöhe automatisch anpassen */
+            width: 100%;
+            max-width: 100%;
+            height: auto;
             border-radius: 12px;
             object-fit: cover;
-            margin-bottom: 15px;
         }
-        
+
         .ticker {
             position: fixed;
             bottom: 0;
@@ -91,7 +96,7 @@
             display: flex;
             align-items: center;
         }
-        
+
         .ticker-text {
             display: inline-block;
             padding-left: 100%;
@@ -100,23 +105,19 @@
             font-weight: bold;
             color: #000;
         }
-        
+
         @keyframes scrollText {
-            0% {
-                transform: translateX(0%);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-100%); }
         }
-        
     </style>
 </head>
 <body>
+    <header>Unser Menü heute</header>
     <div class="meal-container">
         <!-- Low Carbs Section -->
         <div class="meal-section">
-            <h2 style="color: black;">🍛 low carbs</h2>
+            <h2>🍛 Low Carbs</h2>
             <div class="image-container">
                 {% if image_files %}
                     <img src="{{ url_for('static', filename='uploads/' + image_files | random) }}" alt="low_carb">
@@ -128,7 +129,7 @@
 
         <!-- High Protein Section -->
         <div class="meal-section">
-            <h2 style="color: black;">🍛 high protein</h2>
+            <h2>🍛 High Protein</h2>
             <div class="image-container">
                 {% if image_files %}
                     <img src="{{ url_for('static', filename='uploads/' + image_files | random) }}" alt="high_protein">
@@ -140,7 +141,7 @@
 
         <!-- Muscle Gainer Section -->
         <div class="meal-section">
-            <h2 style="color: black;">🍲 muscle gainer</h2>
+            <h2>🍲 Muscle Gainer</h2>
             <div class="image-container">
                 {% if image_files %}
                     <img src="{{ url_for('static', filename='uploads/' + image_files | random) }}" alt="muscle_gainer">
@@ -149,11 +150,12 @@
                 {% endif %}
             </div>
         </div>
+    </div>
 
-        <div class="ticker">
-            <div class="ticker-text">
-                🕒 Öffnungszeiten: Frühstück 08–10 Uhr | Mittag 12–14 Uhr | Abendessen 18–20 Uhr – Guten Appetit! 😋🍗🥦
-            </div>
+    <div class="ticker">
+        <div class="ticker-text">
+            🕒 Öffnungszeiten: Frühstück 08–10 Uhr | Mittag 12–14 Uhr | Abendessen 18–20 Uhr – Guten Appetit! 😋🍗🥦
         </div>
+    </div>
 </body>
 </html>

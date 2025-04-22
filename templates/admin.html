@@ -112,6 +112,16 @@
         {% endfor %}
     </ul>
     <a class="nav-link" href="/display" target="_blank">🎬 Zum Display wechseln</a>
-
+    <div class="container">
+        <h1>Admin Panel</h1>
+        <form action="/set_duration" method="POST">
+            <div class="form-group">
+                <label for="duration">Wählen Sie die Dauer der Bildanzeige (in Sekunden):</label>
+                <input type="number" id="duration" name="duration" min="1" required>
+            </div>
+            <button type="submit">Dauer setzen</button>
+        </form>
+    </div>
+    
 </body>
 </html>

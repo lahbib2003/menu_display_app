@@ -19,21 +19,35 @@ def allowed_file(filename):
 def home():
     return redirect(url_for('login'))
 
-
+@app.route('/set_duration', methods=['POST'])
+def set_duration():
+    duration = request.form['duration']
+    session['duration'] = int(duration)
+    print("test for duration ",duration)
+    return redirect(url_for('admin'))    
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if not session.get('logged_in'):
-        return redirect(url_for('login'))
+        return redirect(url_for('login'))  # Falls der Benutzer nicht eingeloggt ist, auf die Login-Seite umleiten
     
     if request.method == 'POST':
+        # Wenn das Formular zur Dauer eingestellt wird
+        if 'duration' in request.form:
+            duration = request.form['duration']
+            session['duration'] = int(duration)
+            return redirect(url_for('display'))  # Nach dem Speichern der Dauer auf die Display-Seite weiterleiten
+        
+        # Wenn eine Datei hochgeladen wird
         file = request.files.get('file')
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('admin'))
-    current_text = load_display_text()
-    media_files = os.listdir(app.config['UPLOAD_FOLDER'])
-    return render_template('admin.html', media_files=media_files)
+            return redirect(url_for('admin'))  # Nach dem Hochladen der Datei wieder auf die Admin-Seite weiterleiten
+
+    # Laden des aktuellen Texts und der Mediendateien für die Anzeige auf der Admin-Seite
+    current_text = load_display_text()  # Funktion, um den Text für die Anzeige zu laden
+    media_files = os.listdir(app.config['UPLOAD_FOLDER'])  # Liste der Mediendateien im Upload-Ordner
+    return render_template('admin.html', media_files=media_files, current_text=current_text)
 
 
 def load_display_text():
@@ -60,14 +74,34 @@ def set_text():
     with open(TEXT_FILE, "w", encoding="utf-8") as f:
         f.write(text)
     return redirect("/admin")
+@app.route('/video')
+def video():
+    # Liste alle Dateien im Upload-Ordner
+    video_folder = os.listdir(UPLOAD_FOLDER)
 
+    # Suche nach .mp4, .mov, .avi Videos
+    video_file = [f for f in video_folder if f.lower().endswith(('mp4', 'mov', 'avi'))]
+ 
+    if not video_file:
+        return "Kein Video gefunden."
 
+    # Wenn du ein zufälliges Video wählen willst, kannst du es so tun:
+    # import random
+    # video_file = random.choice(video_file)  # Wählt zufällig ein Video aus der Liste
+
+    # Falls du einfach das erste Video verwenden willst:
+    video_file = video_file[0]
+
+    return render_template('video.html', video_file=video_file)
 @app.route('/display')
 def display():
+    duration = session.get('duration', 10)
     files = os.listdir(UPLOAD_FOLDER)
     image_files = [f for f in files if f.lower().endswith(('jpg', 'jpeg', 'png', 'gif'))]
-    
-    return render_template('display.html', image_files=image_files)
+    video_files = [f for f in files if f.lower().endswith(('mp4', 'mov', 'avi'))]
+    selected_video = video_files[0] if video_files else None
+    current_text = load_display_text()
+    return render_template('display.html', image_files=image_files, duration=duration ,video_file=selected_video, display_text=current_text)
 @app.route("/delete", methods=["POST"])
 def delete_file():
     filename = request.form["filename"]

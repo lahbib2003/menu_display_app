@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Video</title>
+    <style>
+        html, body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: black; /* Hintergrund schwarz */
+        }
+        video {
+            width: 100%; /* Maximale Breite des Videos auf 100% setzen */
+            height: 100%; /* Maximale Höhe des Videos auf 100% setzen */
+            object-fit: contain; /* Stellt sicher, dass das Video im Fenster bleibt, ohne dass es beschnitten wird */
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamische Quelle für das Video setzen -->
+    <video autoplay controls muted id="video" src="{{ url_for('static', filename='uploads/' + video_file) }}"></video>
+
+    <script>
+        const video = document.getElementById('video');
+        
+        // Event Listener für das Ende des Videos
+        video.addEventListener('ended', function() {
+            // Weiterleitung zur display.html, wenn das Video zu Ende ist
+            window.location.href = '/display';
+        });
+        
+        // Optional: Direkt ins Vollbild wechseln, wenn das Video startet
+        video.requestFullscreen?.() || video.webkitRequestFullscreen?.() || video.mozRequestFullScreen?.();
+    </script>
+</body>
+</html>
