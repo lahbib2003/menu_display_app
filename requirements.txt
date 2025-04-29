@@ -1,9 +1,2 @@
 flask
- <script>
-        const duration = {{ duration | safe }};
-        console.log("Test Duration:", duration);
-    
-        setTimeout(() => {
-            window.location.href = "/video";
-        }, duration * 1000);
-    </script>
+werkzeug

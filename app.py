@@ -3,7 +3,8 @@ import os
 from werkzeug.utils import secure_filename
 from flask import session, flash
 import random
-
+from datetime import datetime , timedelta
+import calendar
 app = Flask(__name__)
 
 app.secret_key = 'supergeheim'  # Für Session
@@ -15,9 +16,9 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'avi'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/')
-def home():
-    return redirect(url_for('login'))
+#@app.route('/')
+#def home():
+    #return redirect(url_for('login'))
 
 @app.route('/set_duration', methods=['POST'])
 def set_duration():
@@ -25,29 +26,69 @@ def set_duration():
     session['duration'] = int(duration)
     print("test for duration ",duration)
     return redirect(url_for('admin'))    
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    video_filename = None
+    duration = session.get('duration', 10)
+    weekday = datetime.now().strftime('%A').lower()  # z.B. 'monday'
+    files = os.listdir(UPLOAD_FOLDER)
+
+    # Nur Bilder vom aktuellen Wochentag
+    image_files = [
+        f for f in files
+        if f.lower().startswith(weekday) and f.lower().endswith(('jpg', 'jpeg', 'png', 'gif'))
+    ]
+
+    # Bei POST: neues Video speichern
+    if request.method == 'POST':
+        file = request.files.get('hint')
+        if file:
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            video_filename = filename
+    else:
+        # Wenn kein neues Video hochgeladen wurde: Suche erstes Video mit "hint_"
+        for f in files:
+            if f.lower().startswith("hintergrund") and f.lower().endswith(".mp4"):
+                video_filename = f
+                break
+
+    return render_template("index.html", video=video_filename, image_files=image_files, duration=duration)
+ 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if not session.get('logged_in'):
-        return redirect(url_for('login'))  # Falls der Benutzer nicht eingeloggt ist, auf die Login-Seite umleiten
-    
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
-        # Wenn das Formular zur Dauer eingestellt wird
         if 'duration' in request.form:
             duration = request.form['duration']
             session['duration'] = int(duration)
-            return redirect(url_for('display'))  # Nach dem Speichern der Dauer auf die Display-Seite weiterleiten
-        
-        # Wenn eine Datei hochgeladen wird
-        file = request.files.get('file')
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('admin'))  # Nach dem Hochladen der Datei wieder auf die Admin-Seite weiterleiten
+            return redirect(url_for('display'))
 
-    # Laden des aktuellen Texts und der Mediendateien für die Anzeige auf der Admin-Seite
-    current_text = load_display_text()  # Funktion, um den Text für die Anzeige zu laden
-    media_files = os.listdir(app.config['UPLOAD_FOLDER'])  # Liste der Mediendateien im Upload-Ordner
+        file = request.files.get('file')
+        selected_day = request.form.get('day')
+
+        if file and allowed_file(file.filename):
+            # Automatischen Wochentag ermitteln, wenn keiner ausgewählt ist
+            if not selected_day:
+                today = datetime.today().weekday()  # 0 = Montag, 6 = Sonntag
+                day_names = ['Monday',  'Tuesday', 'Wednesday','Thursday', 'Friday', 'Saturday', 'Sunday']
+                selected_day = day_names[today]
+
+            original_filename = secure_filename(file.filename)
+            filename = f"{selected_day}_{original_filename}"
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            return redirect(url_for('admin'))
+
+    current_text = load_display_text()
+    media_files = os.listdir(app.config['UPLOAD_FOLDER'])
     return render_template('admin.html', media_files=media_files, current_text=current_text)
+
+
 
 
 def load_display_text():
@@ -74,34 +115,62 @@ def set_text():
     with open(TEXT_FILE, "w", encoding="utf-8") as f:
         f.write(text)
     return redirect("/admin")
+
 @app.route('/video')
 def video():
+    weekday = datetime.now().strftime('%A').lower()  # z.B. 'monday', 'tuesday', etc.
+
     # Liste alle Dateien im Upload-Ordner
     video_folder = os.listdir(UPLOAD_FOLDER)
 
-    # Suche nach .mp4, .mov, .avi Videos
-    video_file = [f for f in video_folder if f.lower().endswith(('mp4', 'mov', 'avi'))]
- 
+    # Filtere Videos, die mit dem heutigen Wochentag beginnen
+    video_file = [
+        f for f in video_folder
+        if f.lower().startswith(weekday) and f.lower().endswith(('mp4', 'mov', 'avi'))
+    ]
+
     if not video_file:
-        return "Kein Video gefunden."
+        return f"Kein Video gefunden für {weekday.title()}."
 
-    # Wenn du ein zufälliges Video wählen willst, kannst du es so tun:
-    # import random
-    # video_file = random.choice(video_file)  # Wählt zufällig ein Video aus der Liste
-
-    # Falls du einfach das erste Video verwenden willst:
+    # Du kannst hier z.B. das erste Video nehmen oder ein zufälliges
     video_file = video_file[0]
 
     return render_template('video.html', video_file=video_file)
+
 @app.route('/display')
 def display():
     duration = session.get('duration', 10)
+    weekday = datetime.now().strftime('%A').lower()  # z.B. 'monday'
+    #weekday = (datetime.now() + timedelta(days=1)).strftime('%A').lower()
     files = os.listdir(UPLOAD_FOLDER)
-    image_files = [f for f in files if f.lower().endswith(('jpg', 'jpeg', 'png', 'gif'))]
-    video_files = [f for f in files if f.lower().endswith(('mp4', 'mov', 'avi'))]
+
+    # Nur Bilder vom aktuellen Wochentag
+    image_files = [
+        f for f in files
+        if f.lower().startswith(weekday) and f.lower().endswith(('jpg', 'jpeg', 'png', 'gif'))
+    ]
+
+    # Falls weniger als 3 Bilder, auffüllen mit leeren Strings
+    while len(image_files) < 3:
+        image_files.append(None)
+
+    # 3 zufällige Bilder auswählen, wenn mehr vorhanden sind
+    selected_images = random.sample(image_files, 3) if len(image_files) >= 3 else image_files
+
+    # Video vom heutigen Tag (optional)
+    video_files = [
+        f for f in files
+        if f.lower().startswith(weekday) and f.lower().endswith(('mp4', 'mov', 'avi'))
+    ]
     selected_video = video_files[0] if video_files else None
+
     current_text = load_display_text()
-    return render_template('display.html', image_files=image_files, duration=duration ,video_file=selected_video, display_text=current_text)
+
+    return render_template('display.html',
+                           image_files=selected_images,
+                           duration=duration,
+                           video_file=selected_video,
+                           display_text=current_text)
 @app.route("/delete", methods=["POST"])
 def delete_file():
     filename = request.form["filename"]

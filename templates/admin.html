@@ -6,18 +6,18 @@
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            margin: 2rem;
             background-color: #f0f2f5;
             color: #333;
+            margin: 2rem;
         }
 
-        h1 {
+        h1, h2, h3 {
             text-align: center;
             color: #0066cc;
         }
 
         form {
-            background: white;
+            background: #fff;
             padding: 2rem;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -25,26 +25,42 @@
             margin: 2rem auto;
         }
 
-        input[type="file"] {
+        select, input[type="number"], input[type="file"] {
             width: 100%;
-            padding: 1rem;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        input[type="file"] {
             border: 2px dashed #ccc;
-            border-radius: 10px;
             background: #fafafa;
             cursor: pointer;
-            margin-bottom: 1rem;
         }
 
         button {
+            display: block;
+            margin: auto;
             padding: 0.8rem 1.5rem;
+            font-size: 1rem;
             background-color: #28a745;
             color: white;
             border: none;
             border-radius: 8px;
-            font-size: 1rem;
             cursor: pointer;
+        }
+
+        button[style*="red"] {
+            background-color: #dc3545;
+        }
+
+        .preview {
+            max-height: 150px;
+            max-width: 250px;
             display: block;
-            margin: auto;
+            margin-top: 1rem;
         }
 
         ul {
@@ -55,27 +71,24 @@
         }
 
         li {
-            background: white;
+            background: #fff;
             margin: 1rem 0;
             padding: 1rem;
             border-radius: 8px;
             box-shadow: 0 1px 5px rgba(0,0,0,0.05);
         }
 
-        .preview {
-            max-height: 150px;
-            max-width: 250px;
-            display: block;
-            margin-top: 1rem;
-        }
-
         .nav-link {
             display: block;
             text-align: center;
-            margin-top: 2rem;
+            margin: 3rem auto;
             text-decoration: none;
             font-weight: bold;
             color: #0066cc;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -84,44 +97,66 @@
     <h1>📤 Medien Upload (Bilder & Videos)</h1>
 
     <form action="/admin" method="POST" enctype="multipart/form-data">
+        <label for="day"><strong>Wochentag auswählen oder Hintergrund-Video:</strong></label>
+        <p style="font-size: 0.9rem; color: #555;">
+            Hinweis: Bitte benennen Sie das Hintergrundvideo um und ersetzen Sie den Namen mit „hintergrund“.
+        </p>
+
+        <select name="day" id="day">
+            <option value="">🔄 Automatisch (heutiger Tag)</option>
+            <option value="Monday">Montag</option>
+            <option value="Tuesday">Dienstag</option>
+            <option value="Wednesday">Mittwoch</option>
+            <option value="Thursday">Donnerstag</option>
+            <option value="Friday">Freitag</option>
+            <option value="hintergrund">Hintergrund_video</option>
+        </select>
+
         <input type="file" name="file" accept="image/*,video/*" required>
-        <button type="submit">Hochladen</button>
+        <button type="submit">📤 Hochladen</button>
     </form>
-    
-    <form action="/set_text" method="POST" style="max-width: 600px; margin: 2rem auto;">
-        <label for="display_text"><strong>Lauftext für Display:</strong></label><br>
-        <textarea name="display_text" id="display_text" rows="3" style="width: 100%; padding: 1rem;">{{ current_text }}</textarea><br>
-        <button type="submit" style="margin-top: 1rem;">Text speichern</button>
-    </form>
-    
-    <h2 style="text-align: center;">🗂 Hochgeladene Dateien</h2>
-    <ul>
-        {% for file in media_files %}
-        <li>
-            <strong>{{ file }}</strong><br>
-            {% if file.endswith(('png', 'jpg', 'jpeg', 'gif')) %}
-                <img class="preview" src="{{ url_for('static', filename='uploads/' + file) }}">
-            {% elif file.endswith(('mp4', 'mov', 'avi')) %}
-                <video class="preview" src="{{ url_for('static', filename='uploads/' + file) }}" controls></video>
-            {% endif %}
-            <form action="/delete" method="POST" style="margin-top: 0.5rem;">
-                <input type="hidden" name="filename" value="{{ file }}">
-                <button type="submit" style="background: red;">Löschen</button>
-            </form>
-        </li>
-        {% endfor %}
-    </ul>
+
+    <h2>📲 Hochgeladene Dateien</h2>
+
+    {% set grouped_files = {} %}
+    {% for file in media_files %}
+        {% set day = file.split('_')[0] %}
+        {% if day not in grouped_files %}
+            {% set _ = grouped_files.update({day: []}) %}
+        {% endif %}
+        {% set _ = grouped_files[day].append(file) %}
+    {% endfor %}
+
+    {% for day, files in grouped_files.items() %}
+        <h3>📅 {{ day }}</h3>
+        <ul>
+            {% for file in files %}
+            <li>
+                <strong>{{ file }}</strong><br>
+                {% if file.endswith(('png', 'jpg', 'jpeg', 'gif')) %}
+                    <img class="preview" src="{{ url_for('static', filename='uploads/' + file) }}">
+                {% elif file.endswith(('mp4', 'mov', 'avi')) %}
+                    <video class="preview" src="{{ url_for('static', filename='uploads/' + file) }}" controls></video>
+                {% endif %}
+                <form action="/delete" method="POST" style="margin-top: 0.5rem;">
+                    <input type="hidden" name="filename" value="{{ file }}">
+                    <button type="submit" style="background: red;">Löschen</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+
     <a class="nav-link" href="/display" target="_blank">🎬 Zum Display wechseln</a>
-    <div class="container">
-        <h1>Admin Panel</h1>
-        <form action="/set_duration" method="POST">
-            <div class="form-group">
-                <label for="duration">Wählen Sie die Dauer der Bildanzeige (in Sekunden):</label>
-                <input type="number" id="duration" name="duration" min="1" required>
-            </div>
-            <button type="submit">Dauer setzen</button>
-        </form>
-    </div>
-    
+
+    <form action="/set_duration" method="POST">
+        <h2>⏱️ Anzeigedauer festlegen</h2>
+        <div class="form-group">
+            <label for="duration">Dauer der Bildanzeige (in Sekunden):</label>
+            <input type="number" id="duration" name="duration" min="1" required>
+        </div>
+        <button type="submit">Dauer setzen</button>
+    </form>
+
 </body>
 </html>

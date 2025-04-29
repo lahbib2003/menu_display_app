@@ -7,7 +7,7 @@
    
     <script>
         const duration = {{ duration | safe }};
-        console.log("Test Duration:", duration);
+        
     
         setTimeout(() => {
             window.location.href = "/video";
@@ -70,7 +70,7 @@
             gap: 30px;
             margin: 0 auto;
             height: auto;
-            max-width: 100%;
+            max-width: 90%;
             align-items: center;
         }
     
@@ -191,7 +191,97 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
+        .meal-section {
+            opacity: 0;
+            transform: scale(0.9);
+            animation: showAndHide 9s ease-in-out infinite;
+            animation-fill-mode: both;
+        }
         
+        @keyframes showAndHide {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            10%, 30% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            40%, 100% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+        }
+        
+        /* Verlangsamen Sie die Animationen für die Container mit unterschiedlichen Verzögerungen */
+        .section1 {
+            animation-delay: 0s;
+        }
+        
+        .section2 {
+            animation-delay: 3s;
+        }
+        
+        .section3 {
+            animation-delay: 6s;
+        }
+        .coming-soon-text {
+            font-size: 2rem;
+            text-align: center;
+            color: #000000;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            animation: showTextOnce 10s ease-out forwards;
+            animation-delay: 7s;
+        }
+        
+        /* Der animierte Text */
+        .typing {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 0;
+            animation: typing 4s steps(40, end) forwards;
+            animation-delay: 7s;
+        }
+        
+        /* Kein Cursor sichtbar, also kein blink */
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        /* Der Text taucht auf, bleibt kurz, dann verschwindet er */
+        @keyframes showTextOnce {
+            0%, 30% {
+                opacity: 0;
+                transform: scale(0.9) translateY(50px);
+            }
+            40%, 60% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.9) translateY(50px);
+            }
+        }
+        
+        /* Responsives Design für kleinere Bildschirme */
+        @media (max-width: 600px) {
+            .coming-soon-text {
+                font-size: 1.2rem;
+                top: 30%;
+            }
+        }
+        
+    
+   
     </style>
 </head>
 <div class="qr-code-container">
@@ -206,11 +296,11 @@
     <header>Hungrig? Schau, was wir haben</header>
     <div class="meal-container">
         <!-- Low Carbs Section -->
-        <div class="meal-section">
+        <div class="meal-section section1">Part 1
             <h2>🍛 Low Carbs</h2>
-            <div class="image-container">
-                {% if image_files %}
-                    <img src="{{ url_for('static', filename='uploads/' + image_files | random) }}" alt="low_carb">
+            <div class="image-container">s
+                {% if image_files[0] %}
+                <img src="{{ url_for('static', filename='uploads/' + image_files[0]) }}" alt="low_carb">
                 {% else %}
                     <p>Kein Bild verfügbar.</p>
                 {% endif %}
@@ -220,11 +310,11 @@
         </div>
 
         <!-- High Protein Section -->
-        <div class="meal-section">
+        <div class="meal-section section2">Part 2
             <h2>🍛 High Protein</h2>
             <div class="image-container">
-                {% if image_files %}
-                    <img src="{{ url_for('static', filename='uploads/' + image_files | random) }}" alt="high_protein">
+                {% if image_files[1] %}
+                <img src="{{ url_for('static', filename='uploads/' + image_files[1]) }}" alt="high_protein">
                 {% else %}
                     <p>Kein Bild verfügbar.</p>
                 {% endif %}
@@ -233,11 +323,11 @@
         </div>
 
         <!-- Muscle Gainer Section -->
-        <div class="meal-section">
+        <div class="meal-section section3">Part 3
             <h2>🍲 Muscle Gainer</h2>
             <div class="image-container">
-                {% if image_files %}
-                    <img src="{{ url_for('static', filename='uploads/' + image_files | random) }}" alt="muscle_gainer">
+                {% if image_files[2] %}
+                <img src="{{ url_for('static', filename='uploads/' + image_files[2]) }}" alt="muscle_gainer">
                 {% else %}
                     <p>Kein Bild verfügbar.</p>
                 {% endif %}
@@ -246,6 +336,8 @@
         </div>
         
     </div>
+    <div class="coming-soon-text"><span class="typing">Weitere Produkte erwarten euch bald...</span></div>
+
     
 
     <div class="ticker">
