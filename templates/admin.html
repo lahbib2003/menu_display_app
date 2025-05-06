@@ -90,73 +90,135 @@
         .form-group {
             margin-bottom: 1rem;
         }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 2rem;
+        }
+        
+        .section {
+            background-color: #fff;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+        
+        h1, h2, h3 {
+            color: #00509e;
+            margin-bottom: 1rem;
+        }
+        
+        .grid-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+        
+        .grid-preview img,
+        .grid-preview video {
+            width: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 0.7rem 1.4rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        
+        .button.upload {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .button.upload:hover {
+            background-color: #218838;
+        }
+        
+        .button.delete {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .button.delete:hover {
+            background-color: #c82333;
+        }
+        
+        .nav-link {
+            display: block;
+            text-align: center;
+            margin: 2rem auto;
+            color: #007bff;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
     </style>
 </head>
 <body>
 
-    <h1>📤 Medien Upload (Bilder & Videos)</h1>
+    <div class="container">
 
-    <form action="/admin" method="POST" enctype="multipart/form-data">
-        <label for="day"><strong>Wochentag auswählen oder Hintergrund-Video:</strong></label>
-        <p style="font-size: 0.9rem; color: #555;">
-            Hinweis: Bitte benennen Sie das Hintergrundvideo um und ersetzen Sie den Namen mit „hintergrund“.
-        </p>
-
-        <select name="day" id="day">
-            <option value="">🔄 Automatisch (heutiger Tag)</option>
-            <option value="Monday">Montag</option>
-            <option value="Tuesday">Dienstag</option>
-            <option value="Wednesday">Mittwoch</option>
-            <option value="Thursday">Donnerstag</option>
-            <option value="Friday">Freitag</option>
-            <option value="hintergrund">Hintergrund_video</option>
-        </select>
-
-        <input type="file" name="file" accept="image/*,video/*" required>
-        <button type="submit">📤 Hochladen</button>
-    </form>
-
-    <h2>📲 Hochgeladene Dateien</h2>
-
-    {% set grouped_files = {} %}
-    {% for file in media_files %}
-        {% set day = file.split('_')[0] %}
-        {% if day not in grouped_files %}
-            {% set _ = grouped_files.update({day: []}) %}
-        {% endif %}
-        {% set _ = grouped_files[day].append(file) %}
-    {% endfor %}
-
-    {% for day, files in grouped_files.items() %}
-        <h3>📅 {{ day }}</h3>
-        <ul>
-            {% for file in files %}
-            <li>
-                <strong>{{ file }}</strong><br>
-                {% if file.endswith(('png', 'jpg', 'jpeg', 'gif')) %}
-                    <img class="preview" src="{{ url_for('static', filename='uploads/' + file) }}">
-                {% elif file.endswith(('mp4', 'mov', 'avi')) %}
-                    <video class="preview" src="{{ url_for('static', filename='uploads/' + file) }}" controls></video>
-                {% endif %}
-                <form action="/delete" method="POST" style="margin-top: 0.5rem;">
-                    <input type="hidden" name="filename" value="{{ file }}">
-                    <button type="submit" style="background: red;">Löschen</button>
-                </form>
-            </li>
-            {% endfor %}
-        </ul>
-    {% endfor %}
-
-    <a class="nav-link" href="/display" target="_blank">🎬 Zum Display wechseln</a>
-
-    <form action="/set_duration" method="POST">
-        <h2>⏱️ Anzeigedauer festlegen</h2>
-        <div class="form-group">
-            <label for="duration">Dauer der Bildanzeige (in Sekunden):</label>
-            <input type="number" id="duration" name="duration" min="1" required>
+        <div class="section">
+            <h1>📤 Medien Upload</h1>
+            <form action="/admin" method="POST" enctype="multipart/form-data">
+                <label for="day"><strong>Wochentag auswählen oder Hintergrund-Video:</strong></label>
+                <!-- Upload-Felder -->
+                <select name="day" id="day">
+                    <option value="">🔄 Automatisch (heutiger Tag)</option>
+                    <option value="Monday">Montag</option>
+                    <option value="Tuesday">Dienstag</option>
+                    <option value="Wednesday">Mittwoch</option>
+                    <option value="Thursday">Donnerstag</option>
+                    <option value="Friday">Freitag</option>
+                    <option value="hintergrund">Hintergrund_video</option>
+                </select>
+                <input type="file" name="file" required>
+                <button class="button upload" type="submit">📤 Hochladen</button>
+            </form>
         </div>
-        <button type="submit">Dauer setzen</button>
-    </form>
+    
+        <div class="section">
+            <h2>📲 Hochgeladene Dateien</h2>
+            {% for day, files in grouped_files.items() %}
+                <h3>📅 {{ day }}</h3>
+                <div class="grid-preview">
+                    {% for file in files %}
+                    <div>
+                        <strong>{{ file }}</strong><br>
+                        {% if file.endswith(('png', 'jpg', 'jpeg', 'gif')) %}
+                            <img src="{{ url_for('static', filename='uploads/' + file) }}">
+                        {% elif file.endswith(('mp4', 'mov', 'avi')) %}
+                            <video src="{{ url_for('static', filename='uploads/' + file) }}" controls></video>
+                        {% endif %}
+                        <form action="/delete" method="POST">
+                            <input type="hidden" name="filename" value="{{ file }}">
+                            <button class="button delete" type="submit">Löschen</button>
+                        </form>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    
+        <div class="section">
+            <h2>⏱️ Anzeigedauer festlegen</h2>
+            <form action="/set_duration" method="POST">
+                <label for="duration">Dauer (Sek.):</label>
+                <input type="number" name="duration" id="duration" required min="1">
+                <button class="button upload" type="submit">Dauer setzen</button>
+            </form>
+        </div>
+    
+        <a class="nav-link" href="/display" target="_blank">🎬 Zum Display wechseln</a>
+    </div>
+    
 
 </body>
 </html>

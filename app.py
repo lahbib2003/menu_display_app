@@ -57,6 +57,8 @@ def index():
 
     return render_template("index.html", video=video_filename, image_files=image_files, duration=duration)
  
+
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if not session.get('logged_in'):
@@ -72,10 +74,9 @@ def admin():
         selected_day = request.form.get('day')
 
         if file and allowed_file(file.filename):
-            # Automatischen Wochentag ermitteln, wenn keiner ausgewählt ist
             if not selected_day:
-                today = datetime.today().weekday()  # 0 = Montag, 6 = Sonntag
-                day_names = ['Monday',  'Tuesday', 'Wednesday','Thursday', 'Friday', 'Saturday', 'Sunday']
+                today = datetime.today().weekday()
+                day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
                 selected_day = day_names[today]
 
             original_filename = secure_filename(file.filename)
@@ -84,9 +85,21 @@ def admin():
 
             return redirect(url_for('admin'))
 
-    current_text = load_display_text()
+    # Neue Gruppierung für die Template-Ausgabe
     media_files = os.listdir(app.config['UPLOAD_FOLDER'])
-    return render_template('admin.html', media_files=media_files, current_text=current_text)
+    grouped_files = {}
+
+    for file in media_files:
+        if "_" in file:
+            day = file.split('_')[0]
+        else:
+            day = "Unbekannt"
+
+        if day not in grouped_files:
+            grouped_files[day] = []
+        grouped_files[day].append(file)
+
+    return render_template('admin.html', media_files=media_files, grouped_files=grouped_files)
 
 
 
