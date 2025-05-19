@@ -6,11 +6,13 @@ import random
 from datetime import datetime , timedelta
 import calendar
 app = Flask(__name__)
-
+import json  # Ganz oben ergänzen
+import uuid
+MENU_FILE = "static/menus.json"  # Neue globale Variable
 app.secret_key = 'supergeheim'  # Für Session
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+SCHEDULE_FILE = "static/menu_schedule.json" 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'avi'}
 
 def allowed_file(filename):
@@ -26,21 +28,44 @@ def set_duration():
     session['duration'] = int(duration)
     print("test for duration ",duration)
     return redirect(url_for('admin'))    
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    
+
     video_filename = None
     duration = session.get('duration', 10)
-    weekday = datetime.now().strftime('%A').lower()  # z.B. 'monday'
-    files = os.listdir(UPLOAD_FOLDER)
+    weekday = datetime.now().strftime('%A')  # z.B. 'Monday'
 
-    # Nur Bilder vom aktuellen Wochentag
-    image_files = [
-        f for f in files
-        if f.lower().startswith(weekday) and f.lower().endswith(('jpg', 'jpeg', 'png', 'gif'))
-    ]
+    # Lade Zuweisungen
+    assignments = []
+    if os.path.exists('assignments.json'):
+        with open('assignments.json', 'r', encoding='utf-8') as f:
+            assignments = json.load(f)
 
-    # Bei POST: neues Video speichern
+    # Lade Menü-Daten
+    menus = []
+    if os.path.exists(MENU_FILE):
+        with open(MENU_FILE, 'r', encoding='utf-8') as f:
+            try:
+                menus = json.load(f)
+            except json.JSONDecodeError:
+                menus = []
+
+    # Finde Menüs für den heutigen Wochentag
+    assigned_menus = []
+    for a in assignments:
+        if a['day'].lower() == weekday.lower():
+            # Menü-ID aus assignment
+            menu_id = a['menu']['id']
+            # Menü-Objekt aus Menü-Datei finden
+            matching_menu = next((m for m in menus if m['id'] == menu_id), None)
+            if matching_menu:
+                assigned_menus.append(matching_menu)
+
+    # Bild-Dateinamen extrahieren
+    image_files = [menu['filename'] for menu in assigned_menus]
+
+    # Bei POST: Video hochladen
     if request.method == 'POST':
         file = request.files.get('hint')
         if file:
@@ -49,15 +74,60 @@ def index():
             file.save(filepath)
             video_filename = filename
     else:
-        # Wenn kein neues Video hochgeladen wurde: Suche erstes Video mit "hint_"
+        # Wenn kein neues Video hochgeladen wurde: Suche erstes Video mit "hintergrund"
+        files = os.listdir(UPLOAD_FOLDER)
         for f in files:
             if f.lower().startswith("hintergrund") and f.lower().endswith(".mp4"):
                 video_filename = f
                 break
 
     return render_template("index.html", video=video_filename, image_files=image_files, duration=duration)
- 
+ASSIGNMENTS_FILE = 'assignments.json'
+#to delete the uploaded menus  
+@app.route('/delete_menu', methods=['POST'])
+def delete_menu():
+    menu_id = request.form.get('menu_id')  # <<<<<< angepasst
 
+    if not menu_id:
+        return jsonify({"error": "menu_id missing"}), 400
+
+    print("test von menu id ,", menu_id)
+
+    # Menüs laden
+    with open(MENU_FILE, 'r', encoding='utf-8') as f:
+        menus = json.load(f)
+
+    # Finde das zu löschende Menü
+    menu_to_delete = next((m for m in menus if m['id'] == menu_id), None)
+    if not menu_to_delete:
+        flash("Menü nicht gefunden.")
+        return redirect(url_for('admin'))  # oder wo deine Admin-Seite ist
+
+    # Bild löschen
+    image_path = os.path.join(UPLOAD_FOLDER, menu_to_delete['filename'])
+    if os.path.exists(image_path):
+        os.remove(image_path)
+
+    # Menü aus Liste entfernen
+    menus = [m for m in menus if m['id'] != menu_id]
+
+    # Neue Menüliste speichern
+    with open(MENU_FILE, 'w', encoding='utf-8') as f:
+        json.dump(menus, f, ensure_ascii=False, indent=2)
+
+    # Zuweisungen laden und filtern
+    if os.path.exists(ASSIGNMENTS_FILE):
+        with open(ASSIGNMENTS_FILE, 'r', encoding='utf-8') as f:
+            assignments = json.load(f)
+        
+        assignments = [a for a in assignments if a['menu_id'] != menu_id]
+        
+        # Neue Zuweisungen speichern
+        with open(ASSIGNMENTS_FILE, 'w', encoding='utf-8') as f:
+            json.dump(assignments, f, ensure_ascii=False, indent=2)
+
+    flash("Menü und zugehörige Zuweisungen wurden gelöscht.")
+    return redirect(url_for('admin'))
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
@@ -84,7 +154,14 @@ def admin():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
             return redirect(url_for('admin'))
-
+    if os.path.exists(MENU_FILE):
+        with open(MENU_FILE, 'r', encoding='utf-8') as f:
+            try:
+                menus = json.load(f)
+            except json.JSONDecodeError:
+                menus = []
+    else:
+        menus = []
     # Neue Gruppierung für die Template-Ausgabe
     media_files = os.listdir(app.config['UPLOAD_FOLDER'])
     grouped_files = {}
@@ -99,10 +176,115 @@ def admin():
             grouped_files[day] = []
         grouped_files[day].append(file)
 
-    return render_template('admin.html', media_files=media_files, grouped_files=grouped_files)
+    return render_template('admin.html', media_files=media_files, grouped_files=grouped_files,  menus=menus)
 
 
+@app.route('/upload_menu', methods=['POST'])
+def upload_menu():
+    if 'menu_image' not in request.files:
+        flash('Kein Bild ausgewählt.')
+        return redirect(url_for('admin'))
 
+    image = request.files['menu_image']
+    name = request.form.get('menu_name')
+    description = request.form.get('menu_description')
+
+    if not image or image.filename == '':
+        flash('Ungültige Bilddatei.')
+        return redirect(url_for('admin'))
+
+    if not allowed_file(image.filename):
+        flash('Dateityp nicht erlaubt.')
+        return redirect(url_for('admin'))
+
+    filename = secure_filename(image.filename)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    image.save(filepath)
+
+    # Menü-Eintrag vorbereiten
+    new_entry = {
+        'id': str(uuid.uuid4()),  # Generiere eine einzigartige ID für jedes Menü
+        'filename': filename,
+        'name': name,
+        'description': description
+    }
+
+    # Bestehende Menüs laden oder neues Array starten
+    if os.path.exists(MENU_FILE):
+        with open(MENU_FILE, 'r', encoding='utf-8') as f:
+            try:
+                menus = json.load(f)
+            except json.JSONDecodeError:
+                menus = []
+    else:
+        menus = []
+
+    menus.append(new_entry)
+
+    with open(MENU_FILE, 'w', encoding='utf-8') as f:
+        json.dump(menus, f, ensure_ascii=False, indent=2)
+
+    flash('Menübild erfolgreich hochgeladen.')
+    return redirect(url_for('admin'))
+
+@app.route('/assign_menu', methods=['POST'])
+def assign_menu():
+    menu_id = request.form.get('menu_id')
+    day = request.form.get('day')
+
+    # Lade bestehende Menüs
+    if os.path.exists(MENU_FILE):
+        with open(MENU_FILE, 'r', encoding='utf-8') as f:
+            try:
+                menus = json.load(f)
+            except json.JSONDecodeError:
+                menus = []
+    else:
+        menus = []
+
+    # Menü anhand der ID suchen
+    selected_menu = next((menu for menu in menus if menu['id'] == menu_id), None)
+
+    if selected_menu:
+        # ✅ Aktualisiere den Tag direkt im Menü
+        selected_menu['day'] = day
+
+        # ✅ Überschreibe das Menü in der Menüliste
+        for i, menu in enumerate(menus):
+            if menu['id'] == menu_id:
+                menus[i] = selected_menu
+                break
+
+        # ✅ Speichere das aktualisierte Menü zurück in menus.json
+        with open(MENU_FILE, 'w', encoding='utf-8') as f:
+            json.dump(menus, f, ensure_ascii=False, indent=2)
+
+        # ✅ Speichere die Zuweisung in assignments.json (optional)
+        assignment = {
+            'menu_id': menu_id,
+            'day': day,
+            'menu': selected_menu
+        }
+
+        if os.path.exists('assignments.json'):
+            with open('assignments.json', 'r', encoding='utf-8') as f:
+                try:
+                    assignments = json.load(f)
+                except json.JSONDecodeError:
+                    assignments = []
+        else:
+            assignments = []
+
+        assignments.append(assignment)
+
+        with open('assignments.json', 'w', encoding='utf-8') as f:
+            json.dump(assignments, f, ensure_ascii=False, indent=2)
+
+        flash(f'Menü {selected_menu["name"]} erfolgreich dem {day} zugewiesen!')
+    else:
+        flash('Menü nicht gefunden!')
+
+    return redirect(url_for('admin'))
 
 def load_display_text():
     if os.path.exists(TEXT_FILE):

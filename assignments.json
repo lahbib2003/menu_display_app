@@ -1,0 +1,46 @@
+[
+  {
+    "menu_id": "b9ecd7e0-a408-44dc-926a-be3c7f29cab1",
+    "day": "Monday",
+    "menu": {
+      "id": "b9ecd7e0-a408-44dc-926a-be3c7f29cab1",
+      "filename": "Alaska-Seelachs-in-Sahnesauce-mit-Curryreis.png",
+      "name": "reis",
+      "description": "reis monday",
+      "day": "Monday"
+    }
+  },
+  {
+    "menu_id": "a385a747-bc38-41e3-a7aa-6cabaf745933",
+    "day": "Tuesday",
+    "menu": {
+      "id": "a385a747-bc38-41e3-a7aa-6cabaf745933",
+      "filename": "Bulgur_mit_linsen-SPINAT-gemuse_butterbohnen.jpeg",
+      "name": "paprika",
+      "description": "paprika für meine seelee",
+      "day": "Tuesday"
+    }
+  },
+  {
+    "menu_id": "224dbf41-c8d9-4f06-b971-bbb6e8d509dc",
+    "day": "Monday",
+    "menu": {
+      "id": "224dbf41-c8d9-4f06-b971-bbb6e8d509dc",
+      "filename": "Rindfleisch-Kartoffeln-Weisskohl.png",
+      "name": "rindfleich kartofel",
+      "description": "test",
+      "day": "Monday"
+    }
+  },
+  {
+    "menu_id": "a385a747-bc38-41e3-a7aa-6cabaf745933",
+    "day": "Monday",
+    "menu": {
+      "id": "a385a747-bc38-41e3-a7aa-6cabaf745933",
+      "filename": "Bulgur_mit_linsen-SPINAT-gemuse_butterbohnen.jpeg",
+      "name": "paprika",
+      "description": "paprika für meine seelee",
+      "day": "Monday"
+    }
+  }
+]

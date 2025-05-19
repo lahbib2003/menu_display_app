@@ -166,47 +166,71 @@
     <div class="container">
 
         <div class="section">
-            <h1>📤 Medien Upload</h1>
-            <form action="/admin" method="POST" enctype="multipart/form-data">
-                <label for="day"><strong>Wochentag auswählen oder Hintergrund-Video:</strong></label>
-                <!-- Upload-Felder -->
-                <select name="day" id="day">
-                    <option value="">🔄 Automatisch (heutiger Tag)</option>
+            <h1>🍽️ Menü hochladen (ohne Zuweisung)</h1>
+            <form method="POST" action="{{ url_for('upload_menu') }}" enctype="multipart/form-data">
+                <label for="menu_name">Name:</label>
+                <input type="text" id="menu_name" name="menu_name" required><br><br>
+            
+                <label for="menu_description">Beschreibung:</label>
+                <textarea id="menu_description" name="menu_description" required></textarea><br><br>
+            
+                <label for="menu_image">Bild auswählen:</label>
+                <input type="file" id="menu_image" name="menu_image" accept="image/*" required><br><br>
+            
+                <button type="submit">Menübild hochladen</button>
+            </form>
+            
+        </div>
+        <h2>Hochgeladene Menüs</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+          {% for menu in menus %}
+            <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
+              <img src="{{ url_for('static', filename='uploads/' ~ menu.filename) }}" alt="Bild" width="100%">
+              <h3>{{ menu.name }}</h3>
+              <p>{{ menu.description }}</p>
+              <p>{{ menu.day }}</p>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="section">
+            <h2>📅 Menü einem Tag zuweisen</h2>
+            <form action="/assign_menu" method="POST">
+                <label for="menu_select">Wähle ein gespeichertes Menü:</label>
+                <select name="menu_id" id="menu_select" required>
+                    {% for menu in menus %}
+                        <option value="{{ menu.id }}">
+                            {{ menu.name }} – {{ menu.description }} – {{ menu.day }}
+                        </option>
+                    {% endfor %}
+                </select>
+            
+                <label for="day_select">Wähle einen Tag:</label>
+                <select name="day" id="day_select" required>
                     <option value="Monday">Montag</option>
                     <option value="Tuesday">Dienstag</option>
                     <option value="Wednesday">Mittwoch</option>
                     <option value="Thursday">Donnerstag</option>
                     <option value="Friday">Freitag</option>
-                    <option value="hintergrund">Hintergrund_video</option>
                 </select>
-                <input type="file" name="file" required>
-                <button class="button upload" type="submit">📤 Hochladen</button>
+            
+                <button class="button upload" type="submit">📌 Zuweisen</button>
             </form>
+            
         </div>
-    
-        <div class="section">
-            <h2>📲 Hochgeladene Dateien</h2>
-            {% for day, files in grouped_files.items() %}
-                <h3>📅 {{ day }}</h3>
-                <div class="grid-preview">
-                    {% for file in files %}
-                    <div>
-                        <strong>{{ file }}</strong><br>
-                        {% if file.endswith(('png', 'jpg', 'jpeg', 'gif')) %}
-                            <img src="{{ url_for('static', filename='uploads/' + file) }}">
-                        {% elif file.endswith(('mp4', 'mov', 'avi')) %}
-                            <video src="{{ url_for('static', filename='uploads/' + file) }}" controls></video>
-                        {% endif %}
-                        <form action="/delete" method="POST">
-                            <input type="hidden" name="filename" value="{{ file }}">
-                            <button class="button delete" type="submit">Löschen</button>
-                        </form>
-                    </div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
+        {% for menu in menus %}
+        <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
+            <p>{{ menu.day }}</p>
+          <img src="{{ url_for('static', filename='uploads/' ~ menu.filename) }}" alt="Bild" width="100%">
+          <h3>{{ menu.name }}</h3>
+          <p>{{ menu.description }}</p>
+         
+          <form action="{{ url_for('delete_menu') }}" method="POST" onsubmit="return confirm('Bist du sicher, dass du dieses Menü löschen willst?');">
+            <input type="hidden" name="menu_id" value="{{ menu.id }}">
+            <button class="button delete" type="submit">🗑️ Löschen</button>
+          </form>
         </div>
-    
+      {% endfor %}
+      
         <div class="section">
             <h2>⏱️ Anzeigedauer festlegen</h2>
             <form action="/set_duration" method="POST">

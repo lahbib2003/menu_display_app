@@ -28,28 +28,49 @@
     <header>Hungrig? Schau, was wir haben</header>
     
     <div class="two-images">
-        <img src="{{ url_for('static', filename='ken.png')  }}" alt="Barbie" class="right-img">
-        <img src="{{ url_for('static', filename='barbie.png') }}" alt="Ken" class="left-img">
+
+        <!-- Ken -->
+        <div class="character right">
+            <img src="{{ url_for('static', filename='ken.png') }}" alt="Ken" class="right-img">
+            <div class="speech-bubble"> 
+                <div class="typing-text">
+                    <span class="line1">Hi, ich bin Ken!</span>
+                    <span class="line2">Hast du immer noch Hunger?</span>
+                  </div>
+            </div>
+        </div>
+    
+        <!-- Barbie -->
+        <div class="character left">
+            <img src="{{ url_for('static', filename='barbie.png') }}" alt="Barbie" class="left-img">
+            <div class="speech-bubble">
+                <div class="typing-text">
+                    <span class="line1">Hi, ich bin Barbie!</span>
+                    <span class="line2">Hast du immer noch Hunger?</span>
+                  </div>
+            </div>
+        </div>
+    
     </div>
     
-    <!-- Slideshow Essensbereiche -->
-    <div class="carousel">
-        {% for i in range(3) %}
-        <div class="slide" style="animation-delay: {{ i * 5 }}s;">
-            <img src="{{ url_for('static', filename='uploads/' + image_files[i]) }}" alt="Slide {{ i }}">
-            {% if i == 0 %}
-            <h2>🍛 Low Carbs</h2>
-            <p>Wenig Kohlenhydrate, voller Geschmack.</p>
-            {% elif i == 1 %}
-            <h2>🥗 Vegetarisch</h2>
-            <p>Leicht, gesund und bunt.</p>
-            {% else %}
-            <h2>💪 High Protein</h2>
-            <p>Für Sportler und Genießer.</p>
-            {% endif %}
-        </div>
-        {% endfor %}
-    </div>
+<!-- Slideshow Essensbereiche -->
+<div class="carousel">
+    {% for image in image_files %}
+<div class="slide" style="animation-delay: {{ loop.index0 * 5 }}s;">
+    <img src="{{ url_for('static', filename='uploads/' + image) }}" alt="Slide {{ loop.index0 }}">
+    {% if loop.index0 == 0 %}
+    <h2>🍛 Low Carbs</h2>
+    <p>Wenig Kohlenhydrate, voller Geschmack.</p>
+    {% elif loop.index0 == 1 %}
+    <h2>🥗 Vegetarisch</h2>
+    <p>Leicht, gesund und bunt.</p>
+    {% else %}
+    <h2>💪 High Protein</h2>
+    <p>Für Sportler und Genießer.</p>
+    {% endif %}
+</div>
+{% endfor %}
+</div>
 
      <!-- QR-Code -->
      <div class="qr-code-container">
