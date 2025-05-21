@@ -57,20 +57,20 @@
 <!-- Slideshow Essensbereiche -->
 <!-- Slideshow Essensbereiche -->
 <div class="carousel">
-    {% for slide in assigned_slides %}
-      {% set ext = slide.filename.split('.')[-1].lower() %}
-      {% if ext in ['jpg', 'jpeg', 'png', 'gif'] %}
-        <div class="slide" style="animation-delay: {{ loop.index0 * 5 }}s;">
-          <img src="{{ url_for('static', filename='uploads/' + slide.filename) }}" alt="Slide {{ loop.index0 }}">
-          <h2>{{ slide.name }}</h2>
-          <p>{{ slide.description }}</p>
-        </div>
-      {% endif %}
-    {% endfor %}
+    <div class="carousel-track">
+      {% for slide in assigned_slides %}
+        {% set ext = slide.filename.split('.')[-1].lower() %}
+        {% if ext in ['jpg', 'jpeg', 'png', 'gif'] %}
+          <div class="slide">
+            <img src="{{ url_for('static', filename='uploads/' + slide.filename) }}" alt="Slide {{ loop.index0 }}">
+            <h2>{{ slide.name }}</h2>
+            <p>{{ slide.description }}</p>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
   </div>
   
-
-
      <!-- QR-Code -->
      <div class="qr-code-container">
         <img src="{{ url_for('static', filename='qrcode.png') }}" alt="QR Code">

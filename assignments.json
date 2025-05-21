@@ -42,5 +42,16 @@
       "description": "Rindfleisch-Kartoffeln-Weisskohl",
       "day": "Wednesday"
     }
+  },
+  {
+    "menu_id": "123f847c-1dee-441c-abdb-5440740d6092",
+    "day": "Wednesday",
+    "menu": {
+      "id": "123f847c-1dee-441c-abdb-5440740d6092",
+      "filename": "Gemuese-Lassagne-mit-Edamame.png",
+      "name": "Gemuese-Lassagne-mit-Edamame",
+      "description": "Gemuese-Lassagne-mit-Edamame ",
+      "day": "Wednesday"
+    }
   }
 ]
