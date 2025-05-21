@@ -62,8 +62,12 @@ def index():
             if matching_menu:
                 assigned_menus.append(matching_menu)
 
-    # Bild-Dateinamen extrahieren
-    image_files = [menu['filename'] for menu in assigned_menus]
+    image_extensions = ['jpg', 'jpeg', 'png', 'gif']
+
+    image_files = [
+        menu['filename'] for menu in assigned_menus
+        if menu['filename'].split('.')[-1].lower() in image_extensions
+    ]
 
     # Bei POST: Video hochladen
     if request.method == 'POST':
@@ -80,8 +84,14 @@ def index():
             if f.lower().startswith("hintergrund") and f.lower().endswith(".mp4"):
                 video_filename = f
                 break
+      # Extrahiere nur benötigte Felder
+    assigned_slides = [{
+    'filename': m['filename'],
+    'name': m['name'],
+    'description': m['description']
+    }  for m in assigned_menus]
 
-    return render_template("index.html", video=video_filename, image_files=image_files, duration=duration)
+    return render_template("index.html", video=video_filename, image_files=image_files, duration=duration,assigned_slides=assigned_slides)
 ASSIGNMENTS_FILE = 'assignments.json'
 #to delete the uploaded menus  
 @app.route('/delete_menu', methods=['POST'])
@@ -103,13 +113,9 @@ def delete_menu():
         flash("Menü nicht gefunden.")
         return redirect(url_for('admin'))  # oder wo deine Admin-Seite ist
 
-    # Bild löschen
-    image_path = os.path.join(UPLOAD_FOLDER, menu_to_delete['filename'])
-    if os.path.exists(image_path):
-        os.remove(image_path)
-
-    # Menü aus Liste entfernen
-    menus = [m for m in menus if m['id'] != menu_id]
+    
+    
+  
 
     # Neue Menüliste speichern
     with open(MENU_FILE, 'w', encoding='utf-8') as f:
@@ -133,6 +139,13 @@ def delete_menu():
 def admin():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
+  
+  
+    if os.path.exists(ASSIGNMENTS_FILE):
+        with open(ASSIGNMENTS_FILE, 'r', encoding='utf-8') as f:
+            assigned_menus = json.load(f)
+    else:
+        assigned_menus = []
 
     if request.method == 'POST':
         if 'duration' in request.form:
@@ -176,7 +189,7 @@ def admin():
             grouped_files[day] = []
         grouped_files[day].append(file)
 
-    return render_template('admin.html', media_files=media_files, grouped_files=grouped_files,  menus=menus)
+    return render_template('admin.html', media_files=media_files, grouped_files=grouped_files,  menus=menus,assigned_menus=assigned_menus)
 
 
 @app.route('/upload_menu', methods=['POST'])
@@ -313,59 +326,102 @@ def set_text():
 
 @app.route('/video')
 def video():
-    weekday = datetime.now().strftime('%A').lower()  # z.B. 'monday', 'tuesday', etc.
+    video_filename = None
+    duration = session.get('duration', 10)
+    weekday = datetime.now().strftime('%A')  # z.B. 'Monday'
+   
+    # Lade Zuweisungen
+    assignments = []
+    if os.path.exists('assignments.json'):
+        with open('assignments.json', 'r', encoding='utf-8') as f:
+            assignments = json.load(f)
 
-    # Liste alle Dateien im Upload-Ordner
-    video_folder = os.listdir(UPLOAD_FOLDER)
+    # Lade Menü-Daten
+    menus = []
+    if os.path.exists(MENU_FILE):
+        with open(MENU_FILE, 'r', encoding='utf-8') as f:
+            try:
+                menus = json.load(f)
+            except json.JSONDecodeError:
+                menus = []
 
-    # Filtere Videos, die mit dem heutigen Wochentag beginnen
-    video_file = [
-        f for f in video_folder
-        if f.lower().startswith(weekday) and f.lower().endswith(('mp4', 'mov', 'avi'))
+    # Finde Menüs für den heutigen Wochentag
+    assigned_menus = []
+    for a in assignments:
+        if a['day'].lower() == weekday.lower():
+            # Menü-ID aus assignment
+            menu_id = a['menu']['id']
+            # Menü-Objekt aus Menü-Datei finden
+            matching_menu = next((m for m in menus if m['id'] == menu_id), None)
+            if matching_menu:
+                assigned_menus.append(matching_menu)
+
+    # Nur gültige Videodateien extrahieren
+    video_files = [
+        menu['filename'] for menu in assigned_menus
+        if menu['filename'].lower().endswith(('mp4', 'mov', 'avi'))
     ]
 
-    if not video_file:
-        return f"Kein Video gefunden für {weekday.title()}."
+    selected_video = random.choice(video_files) if video_files else None
 
-    # Du kannst hier z.B. das erste Video nehmen oder ein zufälliges
-    video_file = video_file[0]
+    return render_template('video.html', video_file=selected_video)
 
-    return render_template('video.html', video_file=video_file)
+from datetime import datetime
+import os, json, random
 
 @app.route('/display')
 def display():
     duration = session.get('duration', 10)
-    weekday = datetime.now().strftime('%A').lower()  # z.B. 'monday'
-    #weekday = (datetime.now() + timedelta(days=1)).strftime('%A').lower()
-    files = os.listdir(UPLOAD_FOLDER)
+    weekday = datetime.now().strftime('%A').lower()
 
-    # Nur Bilder vom aktuellen Wochentag
+    # Lade Zuweisungen
+    assignments = []
+    if os.path.exists('assignments.json'):
+        with open('assignments.json', 'r', encoding='utf-8') as f:
+            assignments = json.load(f)
+
+    # Lade Menü-Daten
+    menus = []
+    if os.path.exists(MENU_FILE):
+        with open(MENU_FILE, 'r', encoding='utf-8') as f:
+            try:
+                menus = json.load(f)
+            except json.JSONDecodeError:
+                menus = []
+
+    # Finde Menüs, die für heute zugewiesen wurden
+    assigned_menus = []
+    for a in assignments:
+        if a['day'].lower() == weekday:
+            menu_id = a['menu']['id']
+            matching_menu = next((m for m in menus if m['id'] == menu_id), None)
+            if matching_menu:
+                assigned_menus.append(matching_menu)
+
+    # Nur Bilddateien verwenden (keine Videos)
+    allowed_image_extensions = ('.jpg', '.jpeg', '.png', '.gif')
     image_files = [
-        f for f in files
-        if f.lower().startswith(weekday) and f.lower().endswith(('jpg', 'jpeg', 'png', 'gif'))
+        menu['filename']
+        for menu in assigned_menus
+        if menu['filename'].lower().endswith(allowed_image_extensions)
     ]
 
-    # Falls weniger als 3 Bilder, auffüllen mit leeren Strings
+    # Falls weniger als 3 Bilder, auffüllen mit None
     while len(image_files) < 3:
         image_files.append(None)
 
-    # 3 zufällige Bilder auswählen, wenn mehr vorhanden sind
+    # 3 zufällige Bilder auswählen
     selected_images = random.sample(image_files, 3) if len(image_files) >= 3 else image_files
-
-    # Video vom heutigen Tag (optional)
-    video_files = [
-        f for f in files
-        if f.lower().startswith(weekday) and f.lower().endswith(('mp4', 'mov', 'avi'))
-    ]
-    selected_video = video_files[0] if video_files else None
 
     current_text = load_display_text()
 
     return render_template('display.html',
                            image_files=selected_images,
                            duration=duration,
-                           video_file=selected_video,
+                           video_file=None,  # oder entferne es ganz
                            display_text=current_text)
+
+
 @app.route("/delete", methods=["POST"])
 def delete_file():
     filename = request.form["filename"]
@@ -373,7 +429,49 @@ def delete_file():
     if os.path.exists(filepath):
         os.remove(filepath)
     return redirect("/admin")
+@app.route('/delete_menus', methods=['POST'])
+def delete_menus():
+    menu_id = request.form.get('menu_id')  # <<<<<< angepasst
 
+    if not menu_id:
+        return jsonify({"error": "menu_id missing"}), 400
 
+    print("test von menu id ,", menu_id)
+
+    # Menüs laden
+    with open(MENU_FILE, 'r', encoding='utf-8') as f:
+        menus = json.load(f)
+
+    # Finde das zu löschende Menü
+    menu_to_delete = next((m for m in menus if m['id'] == menu_id), None)
+    if not menu_to_delete:
+        flash("Menü nicht gefunden.")
+        return redirect(url_for('admin'))  # oder wo deine Admin-Seite ist
+
+    # Bild löschen
+    image_path = os.path.join(UPLOAD_FOLDER, menu_to_delete['filename'])
+    if os.path.exists(image_path):
+        os.remove(image_path)
+
+    # Menü aus Liste entfernen
+    menus = [m for m in menus if m['id'] != menu_id]
+
+    # Neue Menüliste speichern
+    with open(MENU_FILE, 'w', encoding='utf-8') as f:
+        json.dump(menus, f, ensure_ascii=False, indent=2)
+
+    # Zuweisungen laden und filtern
+    if os.path.exists(ASSIGNMENTS_FILE):
+        with open(ASSIGNMENTS_FILE, 'r', encoding='utf-8') as f:
+            assignments = json.load(f)
+        
+        assignments = [a for a in assignments if a['menu_id'] != menu_id]
+        
+        # Neue Zuweisungen speichern
+        with open(ASSIGNMENTS_FILE, 'w', encoding='utf-8') as f:
+            json.dump(assignments, f, ensure_ascii=False, indent=2)
+
+    flash("Menü und zugehörige Zuweisungen wurden gelöscht.")
+    return redirect(url_for('admin'))
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

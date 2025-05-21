@@ -182,16 +182,30 @@
             
         </div>
         <h2>Hochgeladene Menüs</h2>
-        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-          {% for menu in menus %}
-            <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
-              <img src="{{ url_for('static', filename='uploads/' ~ menu.filename) }}" alt="Bild" width="100%">
-              <h3>{{ menu.name }}</h3>
-              <p>{{ menu.description }}</p>
-              <p>{{ menu.day }}</p>
-            </div>
-          {% endfor %}
-        </div>
+<div style="display: flex; flex-wrap: wrap; gap: 20px;">
+  {% for menu in menus %}
+    <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
+      {% set ext = menu.filename.split('.')[-1].lower() %}
+      {% if ext in ['jpg', 'jpeg', 'png', 'gif'] %}
+        <img src="{{ url_for('static', filename='uploads/' ~ menu.filename) }}" alt="Bild" width="100%">
+      {% elif ext in ['mp4', 'mov', 'avi'] %}
+        <video width="100%" controls>
+          <source src="{{ url_for('static', filename='uploads/' ~ menu.filename) }}" type="video/{{ ext }}">
+          Dein Browser unterstützt kein Video.
+        </video>
+      {% else %}
+        <p>Dateityp nicht unterstütz.</p>
+      {% endif %}
+      <h3>{{ menu.name }}</h3>
+      <p>{{ menu.description }}</p>
+      <form action="{{ url_for('delete_menus') }}" method="POST" onsubmit="return confirm('Bist du sicher, dass du dieses Menü löschen willst?');">
+        <input type="hidden" name="menu_id" value="{{ menu.id }}">
+        <button class="button delete" type="submit">🗑️ Löschen</button>
+      </form>
+    </div>
+  {% endfor %}
+</div>
+
         <div class="section">
             <h2>📅 Menü einem Tag zuweisen</h2>
             <form action="/assign_menu" method="POST">
@@ -217,19 +231,36 @@
             </form>
             
         </div>
-        {% for menu in menus %}
-        <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
-            <p>{{ menu.day }}</p>
-          <img src="{{ url_for('static', filename='uploads/' ~ menu.filename) }}" alt="Bild" width="100%">
-          <h3>{{ menu.name }}</h3>
-          <p>{{ menu.description }}</p>
-         
-          <form action="{{ url_for('delete_menu') }}" method="POST" onsubmit="return confirm('Bist du sicher, dass du dieses Menü löschen willst?');">
-            <input type="hidden" name="menu_id" value="{{ menu.id }}">
-            <button class="button delete" type="submit">🗑️ Löschen</button>
-          </form>
-        </div>
-      {% endfor %}
+        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+            {% for item in assigned_menus %}
+              {% set menu = item.menu %}
+              {% set ext = menu.filename.split('.')[-1]|lower %}
+              <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
+                <p>{{ item.day }}</p>
+          
+                {% if ext in ['jpg', 'jpeg', 'png', 'gif'] %}
+                  <img src="{{ url_for('static', filename='uploads/' ~ menu.filename) }}" alt="Bild" width="100%">
+                {% elif ext in ['mp4', 'mov', 'avi'] %}
+                  <video width="100%" controls>
+                    <source src="{{ url_for('static', filename='uploads/' ~ menu.filename) }}" type="video/{{ ext }}">
+                    Dein Browser unterstützt kein Video.
+                  </video>
+                {% else %}
+                  <p>Dateityp nicht unterstützt.</p>
+                {% endif %}
+          
+                <h3>{{ menu.name }}</h3>
+                <p>{{ menu.description }}</p>
+          
+                <form action="{{ url_for('delete_menu') }}" method="POST" onsubmit="return confirm('Bist du sicher, dass du dieses Menü löschen willst?');">
+                  <input type="hidden" name="menu_id" value="{{ menu.id }}">
+                  <button class="button delete" type="submit">🗑️ Löschen</button>
+                </form>
+              </div>
+            {% endfor %}
+          </div>
+          
+
       
         <div class="section">
             <h2>⏱️ Anzeigedauer festlegen</h2>

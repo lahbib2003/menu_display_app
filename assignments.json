@@ -1,46 +1,46 @@
 [
   {
-    "menu_id": "b9ecd7e0-a408-44dc-926a-be3c7f29cab1",
-    "day": "Monday",
+    "menu_id": "0810be86-2aad-483d-aecc-6b7d4df423fc",
+    "day": "Wednesday",
     "menu": {
-      "id": "b9ecd7e0-a408-44dc-926a-be3c7f29cab1",
+      "id": "0810be86-2aad-483d-aecc-6b7d4df423fc",
+      "filename": "ken.mp4",
+      "name": "test ",
+      "description": "video",
+      "day": "Wednesday"
+    }
+  },
+  {
+    "menu_id": "353e1994-29a1-4917-9684-13f1460d56db",
+    "day": "Wednesday",
+    "menu": {
+      "id": "353e1994-29a1-4917-9684-13f1460d56db",
+      "filename": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen.png",
+      "name": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen",
+      "description": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen",
+      "day": "Wednesday"
+    }
+  },
+  {
+    "menu_id": "79604584-a820-44e9-a2af-2d476c77bb0c",
+    "day": "Wednesday",
+    "menu": {
+      "id": "79604584-a820-44e9-a2af-2d476c77bb0c",
       "filename": "Alaska-Seelachs-in-Sahnesauce-mit-Curryreis.png",
-      "name": "reis",
-      "description": "reis monday",
-      "day": "Monday"
+      "name": "Alaska-Seelachs-in-Sahnesauce-mit-Curryreis",
+      "description": "Alaska-Seelachs-in-Sahnesauce-mit-Curryreis",
+      "day": "Wednesday"
     }
   },
   {
-    "menu_id": "a385a747-bc38-41e3-a7aa-6cabaf745933",
-    "day": "Tuesday",
+    "menu_id": "0f8a4a0c-4abb-4465-b11b-4786043f7a2e",
+    "day": "Wednesday",
     "menu": {
-      "id": "a385a747-bc38-41e3-a7aa-6cabaf745933",
-      "filename": "Bulgur_mit_linsen-SPINAT-gemuse_butterbohnen.jpeg",
-      "name": "paprika",
-      "description": "paprika für meine seelee",
-      "day": "Tuesday"
-    }
-  },
-  {
-    "menu_id": "224dbf41-c8d9-4f06-b971-bbb6e8d509dc",
-    "day": "Monday",
-    "menu": {
-      "id": "224dbf41-c8d9-4f06-b971-bbb6e8d509dc",
+      "id": "0f8a4a0c-4abb-4465-b11b-4786043f7a2e",
       "filename": "Rindfleisch-Kartoffeln-Weisskohl.png",
-      "name": "rindfleich kartofel",
-      "description": "test",
-      "day": "Monday"
-    }
-  },
-  {
-    "menu_id": "a385a747-bc38-41e3-a7aa-6cabaf745933",
-    "day": "Monday",
-    "menu": {
-      "id": "a385a747-bc38-41e3-a7aa-6cabaf745933",
-      "filename": "Bulgur_mit_linsen-SPINAT-gemuse_butterbohnen.jpeg",
-      "name": "paprika",
-      "description": "paprika für meine seelee",
-      "day": "Monday"
+      "name": "Rindfleisch-Kartoffeln-Weisskohl",
+      "description": "Rindfleisch-Kartoffeln-Weisskohl",
+      "day": "Wednesday"
     }
   }
 ]
