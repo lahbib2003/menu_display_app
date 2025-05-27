@@ -1,15 +1,5 @@
 [
-  {
-    "menu_id": "0810be86-2aad-483d-aecc-6b7d4df423fc",
-    "day": "Wednesday",
-    "menu": {
-      "id": "0810be86-2aad-483d-aecc-6b7d4df423fc",
-      "filename": "ken.mp4",
-      "name": "test ",
-      "description": "video",
-      "day": "Wednesday"
-    }
-  },
+  
   {
     "menu_id": "353e1994-29a1-4917-9684-13f1460d56db",
     "day": "Wednesday",
@@ -52,6 +42,94 @@
       "name": "Gemuese-Lassagne-mit-Edamame",
       "description": "Gemuese-Lassagne-mit-Edamame ",
       "day": "Wednesday"
+    }
+  },
+  {
+    "menu_id": "79604584-a820-44e9-a2af-2d476c77bb0c",
+    "day": "Monday",
+    "menu": {
+      "id": "79604584-a820-44e9-a2af-2d476c77bb0c",
+      "filename": "Alaska-Seelachs-in-Sahnesauce-mit-Curryreis.png",
+      "name": "Alaska-Seelachs-in-Sahnesauce-mit-Curryreis",
+      "description": "Alaska-Seelachs-in-Sahnesauce-mit-Curryreis",
+      "day": "Monday"
+    }
+  },
+  {
+    "menu_id": "64be1218-ca28-4928-8175-acf6663df99e",
+    "day": "Monday",
+    "menu": {
+      "id": "64be1218-ca28-4928-8175-acf6663df99e",
+      "filename": "Rinderbolognese-Linsen-Fusilli.png",
+      "name": "Rinderbolognese-Linsen-Fusilli",
+      "description": "Rinderbolognese-Linsen-Fusilli   ab 35g protein pro protion ",
+      "day": "Monday"
+    }
+  },
+  {
+    "menu_id": "f4e77fc5-59ed-4f00-a436-f1edf8335905",
+    "day": "Monday",
+    "menu": {
+      "id": "f4e77fc5-59ed-4f00-a436-f1edf8335905",
+      "filename": "Protein-Pasta-Paprika.png",
+      "name": "Protein-Pasta-Paprika",
+      "description": "Protein-Pasta-Paprika",
+      "day": "Monday"
+    }
+  },
+  {
+    "menu_id": "353e1994-29a1-4917-9684-13f1460d56db",
+    "day": "Tuesday",
+    "menu": {
+      "id": "353e1994-29a1-4917-9684-13f1460d56db",
+      "filename": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen.png",
+      "name": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen",
+      "description": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen",
+      "day": "Tuesday"
+    }
+  },
+  {
+    "menu_id": "123f847c-1dee-441c-abdb-5440740d6092",
+    "day": "Tuesday",
+    "menu": {
+      "id": "123f847c-1dee-441c-abdb-5440740d6092",
+      "filename": "Gemuese-Lassagne-mit-Edamame.png",
+      "name": "Gemuese-Lassagne-mit-Edamame",
+      "description": "Gemuese-Lassagne-mit-Edamame ",
+      "day": "Tuesday"
+    }
+  },
+  {
+    "menu_id": "64be1218-ca28-4928-8175-acf6663df99e",
+    "day": "Tuesday",
+    "menu": {
+      "id": "64be1218-ca28-4928-8175-acf6663df99e",
+      "filename": "Rinderbolognese-Linsen-Fusilli.png",
+      "name": "Rinderbolognese-Linsen-Fusilli",
+      "description": "Rinderbolognese-Linsen-Fusilli   ab 35g protein pro protion ",
+      "day": "Tuesday"
+    }
+  },
+  {
+    "menu_id": "9e20f95c-7d68-46f6-b979-abad561e3508",
+    "day": "Tuesday",
+    "menu": {
+      "id": "9e20f95c-7d68-46f6-b979-abad561e3508",
+      "filename": "IMG_3182.jpeg",
+      "name": "Tes",
+      "description": "Test",
+      "day": "Tuesday"
+    }
+  },
+  {
+    "menu_id": "baaf69b2-d461-4a55-9f5b-acee8f8f3359",
+    "day": "Tuesday",
+    "menu": {
+      "id": "baaf69b2-d461-4a55-9f5b-acee8f8f3359",
+      "filename": "ken.mp4",
+      "name": "video",
+      "description": "video",
+      "day": "Tuesday"
     }
   }
 ]
