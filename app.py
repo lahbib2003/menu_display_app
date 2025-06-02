@@ -414,12 +414,16 @@ def display():
     selected_images = random.sample(image_files, 3) if len(image_files) >= 3 else image_files
 
     current_text = load_display_text()
-
+    assigned_slides = [{
+    'filename': m['filename'],
+    'name': m['name'],
+    'description': m['description']
+    }  for m in assigned_menus]
     return render_template('display.html',
                            image_files=selected_images,
                            duration=duration,
                            video_file=None,  # oder entferne es ganz
-                           display_text=current_text)
+                           display_text=current_text,assigned_slides=assigned_slides)
 
 
 @app.route("/delete", methods=["POST"])

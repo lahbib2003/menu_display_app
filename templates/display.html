@@ -2,16 +2,12 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-
     <title>Hungrig? Schau, was wir haben!</title>
-   
     <script>
         const duration = {{ duration | safe }};
-        
-    
         setTimeout(() => {
-          window.location.href = "/video";
-         }, duration * 1000); 
+            window.location.href = "/video";
+        }, duration * 100); 
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
@@ -25,18 +21,14 @@
             overflow: hidden;
             animation: fadeInBody 2s ease-in;
         }
-    
+
+        .overlay { background-color: rgba(0, 0, 0, 0.6); padding: 40px; height: 100vh; }
+
         @keyframes fadeInBody {
             from { opacity: 0; transform: scale(1.02); }
             to { opacity: 1; transform: scale(1); }
         }
-    
-        .overlay {
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 40px;
-            height: 100vh;
-        }
-    
+
         header {
             text-align: center;
             font-size: 48px;
@@ -46,87 +38,96 @@
             text-shadow: 2px 2px 5px #000;
             animation: fadeDown 1s ease-in-out;
         }
-        
+
         .logo {
-            position: absolute;  /* Jetzt funktionieren top & left */
-            top: 30px;            /* leicht nach unten */
-            left: 10px;           /* nah am linken Rand */
+            position: absolute;
+            top: 30px;
+            left: 10px;
             animation: bounceIn 2s ease;
         }
-        
-        .logo img {
-            height: 30px;
-            width: auto;
-        }
-        
+
+        .logo img { height: 30px; width: auto; }
+
         @keyframes fadeDown {
             0% { opacity: 0; transform: translateY(-20px); }
             100% { opacity: 1; transform: translateY(0); }
         }
-    
+
         .meal-container {
             display: flex;
-            justify-content: space-around;
-            gap: 30px;
-            margin: 0 auto;
-            height: auto;
-            max-width: 70%;
-            align-items: center;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 90px;
+            height: calc(100vh - 180px); /* header + padding */
+            padding: 0 20px;
+            max-width: 1500px; /* Container kleiner machen */
+            margin: 0 auto; /* zentrieren */
         }
-    
+
         .meal-section {
             background: rgba(255, 255, 255, 0.1);
-            padding: 50px 50px;
+            padding: 40px 30px;
             border-radius: 16px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.3);
             text-align: center;
             flex: 1;
-            height: 80%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             transition: transform 0.4s ease, box-shadow 0.4s ease;
             animation: float 3s ease-in-out infinite;
         }
-    
+
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
         }
-    
+
         .meal-section:hover {
             transform: scale(1.05);
             box-shadow: 0 12px 24px rgba(0,0,0,0.5);
         }
-    
+
         .meal-section h2 {
-            font-size: 48px;
-            border-bottom: 3px solid #f8b400;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
+            font-size: 32px;
+            border-bottom: 2px solid #f8b400;
+            padding-bottom: 10px;
+            margin: 15px 0;
             color: #000;
         }
-    
+
         .image-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 70%;
+            width: 100%;
         }
-    
+
         .image-container img {
             width: 100%;
-            max-width: 100%;
             height: auto;
             border-radius: 12px;
             object-fit: cover;
             transition: transform 0.3s ease-in-out;
         }
-    
+
         .image-container img:hover {
             transform: scale(1.05);
         }
-    
+
+        .assigned_slides {
+            margin-top: 15px;
+            font-size: 16px;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .assigned_slides:hover {
+            transform: scale(1.03);
+        }
+
         .ticker {
             position: fixed;
             bottom: 0;
@@ -139,7 +140,7 @@
             align-items: center;
             z-index: 1000;
         }
-    
+
         .ticker-text {
             display: inline-block;
             padding-left: 100%;
@@ -148,16 +149,12 @@
             font-weight: bold;
             color: #000;
         }
-    
+
         @keyframes scrollText {
             0% { transform: translateX(0%); }
             100% { transform: translateX(-100%); }
         }
-        .meal-description {
-            margin-top: 15px;
-            font-size: 18px;
-            color: #333;
-        }
+
         .qr-code-container {
             position: fixed;
             bottom: 50px;
@@ -166,184 +163,111 @@
             z-index: 999;
             animation: fadeInQR 1.5s ease;
         }
-        
+
         .qr-code-container img {
             width: 100px;
             height: auto;
             opacity: 0.85;
             transition: transform 0.3s ease;
         }
-        
+
         .qr-code-container img:hover {
             transform: scale(1.1);
             opacity: 1;
         }
-        
+
         .qr-code-container p {
             margin: 5px 0 0;
             font-size: 14px;
             color: #fff;
             text-shadow: 1px 1px 3px #000;
         }
-        
+
         @keyframes fadeInQR {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        .meal-section {
-            opacity: 0;
-            transform: scale(0.9);
-            animation: showAndHide 9s ease-in-out infinite;
-            animation-fill-mode: both;
-        }
-        
+
         @keyframes showAndHide {
-            0%, 100% {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            10%, 30% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            40%, 100% {
-                opacity: 0;
-                transform: scale(0.9);
-            }
+            0%, 100% { opacity: 0; transform: scale(0.9); }
+            10%, 30% { opacity: 1; transform: scale(1); }
+            40%, 100% { opacity: 0; transform: scale(0.9); }
         }
-        
-        /* Verlangsamen Sie die Animationen für die Container mit unterschiedlichen Verzögerungen */
-        .section1 {
-            animation-delay: 0s;
-        }
-        
-        .section2 {
-            animation-delay: 3s;
-        }
-        
-        .section3 {
-            animation-delay: 6s;
-        }
-        .coming-soon-text {
-            font-size: 2rem;
-            text-align: center;
-            color: #000000;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            animation: showTextOnce 10s ease-out forwards;
-            animation-delay: 7s;
-        }
-        
-        /* Der animierte Text */
-        .typing {
-            display: inline-block;
-            overflow: hidden;
-            white-space: nowrap;
-            width: 0;
-            animation: typing 4s steps(40, end) forwards;
-            animation-delay: 7s;
-        }
-        
-        /* Kein Cursor sichtbar, also kein blink */
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-        
-        /* Der Text taucht auf, bleibt kurz, dann verschwindet er */
-        @keyframes showTextOnce {
-            0%, 30% {
-                opacity: 0;
-                transform: scale(0.9) translateY(50px);
-            }
-            40%, 60% {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-            100% {
-                opacity: 0;
-                transform: scale(0.9) translateY(50px);
-            }
-        }
-        
-        /* Responsives Design für kleinere Bildschirme */
+
+        .section1 { animation: showAndHide 9s ease-in-out infinite; animation-delay: 0s; }
+        .section2 { animation: showAndHide 9s ease-in-out infinite; animation-delay: 3s; }
+        .section3 { animation: showAndHide 9s ease-in-out infinite; animation-delay: 6s; }
+
         @media (max-width: 600px) {
-            .coming-soon-text {
-                font-size: 1.2rem;
-                top: 30%;
-            }
+            header { font-size: 32px; }
+            .meal-container { flex-direction: column; }
+            .meal-section { margin-bottom: 20px; }
         }
-        
-    
-   
     </style>
 </head>
 <body>
-<div class="qr-code-container">
-    <img src="{{ url_for('static', filename='qrcode.png') }}" alt="QR Code">
-    <p>Für weitere Infos – jetzt scannen!</p>
-</div>
-
+    <div class="qr-code-container">
+        <img src="{{ url_for('static', filename='qrcode.png') }}" alt="QR Code">
+        <p>Für weitere Infos – jetzt scannen!</p>
+    </div>
 
     <div class="logo">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
     </div>
+
     <header>Hungrig? Schau, was wir haben</header>
+
     <div class="meal-container">
-        <!-- Low Carbs Section -->
-        <div class="meal-section section1">Part 1
+        <div class="meal-section section1">
             <h2>🍛 Low Carbs</h2>
-            <div class="image-container">s
-                {% if image_files[0] %}
-                <img src="{{ url_for('static', filename='uploads/' + image_files[0]) }}" alt="low_carb">
-                {% else %}
-                    <p>Kein Bild verfügbar.</p>
-                {% endif %}
-               
-            </div>
-            <p class="meal-description">  ⚡ 🍗  Ab 25 g Eiweiß pro  portion </p>
-        </div>
-
-        <!-- High Protein Section -->
-        <div class="meal-section section2">Part 2
-            <h2>🍛 High Protein</h2>
             <div class="image-container">
-                {% if image_files[1] %}
-                <img src="{{ url_for('static', filename='uploads/' + image_files[1]) }}" alt="high_protein">
+                {% if assigned_slides|length > 0 %}
+                    <img src="{{ url_for('static', filename='uploads/' + assigned_slides[0].filename) }}" alt="Low Carb Gericht">
                 {% else %}
                     <p>Kein Bild verfügbar.</p>
                 {% endif %}
             </div>
-            <p class="meal-description">  ⚡ 🧬 2,6g   Kohlenhydrate  pro 100 g</p>
+            {% if assigned_slides|length > 0 %}
+                <h2>{{ assigned_slides[0].name }}</h2>
+                <div class="assigned_slides">{{ assigned_slides[0].description }}</div>
+            {% endif %}
         </div>
 
-        <!-- Muscle Gainer Section -->
-        <div class="meal-section section3">Part 3
-            <h2>🍲 Muscle Gainer</h2>
+        <div class="meal-section section2">
+            <h2>🍛 Low Carbs</h2>
             <div class="image-container">
-                {% if image_files[2] %}
-                <img src="{{ url_for('static', filename='uploads/' + image_files[2]) }}" alt="muscle_gainer">
+                {% if assigned_slides|length > 0 %}
+                    <img src="{{ url_for('static', filename='uploads/' + assigned_slides[1].filename) }}" alt="Low Carb Gericht">
                 {% else %}
                     <p>Kein Bild verfügbar.</p>
                 {% endif %}
             </div>
-            <p class="meal-description">  ✅ 🥦 Voller Proteine und Vitamine  </p>
+            {% if assigned_slides|length > 0 %}
+                <h2>{{ assigned_slides[1].name }}</h2>
+                <div class="assigned_slides">{{ assigned_slides[1].description }}</div>
+            {% endif %}
         </div>
-        
-    </div>
-    <div class="coming-soon-text"><span class="typing">Weitere Produkte erwarten euch bald...</span></div>
 
-    
 
-    <div class="ticker">
-        <div class="ticker-text">
-            🕒 Öffnungszeiten: MO-Fr 8 uhr Bis 16 uhr  – Guten Appetit! 😋🍗🥦
+        <div class="meal-section section3">
+            <h2>🍛 Low Carbs</h2>
+            <div class="image-container">
+                {% if assigned_slides|length > 0 %}
+                    <img src="{{ url_for('static', filename='uploads/' + assigned_slides[2].filename) }}" alt="Low Carb Gericht">
+                {% else %}
+                    <p>Kein Bild verfügbar.</p>
+                {% endif %}
+            </div>
+            {% if assigned_slides|length > 0 %}
+                <h2>{{ assigned_slides[2].name }}</h2>
+                <div class="assigned_slides">{{ assigned_slides[2].description }}</div>
+            {% endif %}
+        </div>
+
+        <div class="ticker">
+            <div class="ticker-text">
+                🕒 Öffnungszeiten: MO-Fr 8 uhr Bis 16 uhr  – Guten Appetit! 😋🍗🥦
+            </div>
         </div>
     </div>
 </body>

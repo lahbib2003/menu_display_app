@@ -25,7 +25,7 @@
     "filename": "Rindfleisch-Kartoffeln-Weisskohl.png",
     "name": "Rindfleisch-Kartoffeln-Weisskohl",
     "description": "Rindfleisch-Kartoffeln-Weisskohl",
-    "day": "Wednesday"
+    "day": "Tuesday"
   },
   {
     "id": "9e20f95c-7d68-46f6-b979-abad561e3508",
@@ -53,19 +53,20 @@
     "filename": "Rinderbolognese-Linsen-Fusilli.png",
     "name": "Rinderbolognese-Linsen-Fusilli",
     "description": "Rinderbolognese-Linsen-Fusilli   ab 35g protein pro protion ",
-    "day": "Tuesday"
-  },
-  {
-    "id": "56bf926b-6edc-4330-9317-5ecae531f8e1",
-    "filename": "Vollkornpasta-mit-Zitronengras-Sauce.png",
-    "name": "Vollkornpasta-mit-Zitronengras-Sauce",
-    "description": "Vollkornpasta-mit-Zitronengras-Sauce"
+    "day": "Thursday"
   },
   {
     "id": "baaf69b2-d461-4a55-9f5b-acee8f8f3359",
     "filename": "ken.mp4",
     "name": "video",
     "description": "video",
+    "day": "Tuesday"
+  },
+  {
+    "id": "52c3f430-ab9f-4656-aeb3-0cb5ba548b50",
+    "filename": "Chili-con-Carne-mit-Rindfleisch.png",
+    "name": "Chili-con-Carne-mit-Rindfleisch",
+    "description": "Chili-con-Carne-mit-Rindfleisch   ap 35 g protein pro protion",
     "day": "Tuesday"
   }
 ]
