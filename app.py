@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for
 import os
 from werkzeug.utils import secure_filename
-from flask import session, flash
+from flask import session, flash ,jsonify
+
 import random
 from datetime import datetime , timedelta
 import calendar
 app = Flask(__name__)
 import json  # Ganz oben ergänzen
+
 import uuid
 MENU_FILE = "static/menus.json"  # Neue globale Variable
 app.secret_key = 'supergeheim'  # Für Session
@@ -239,11 +241,42 @@ def upload_menu():
 
     flash('Menübild erfolgreich hochgeladen.')
     return redirect(url_for('admin'))
+TEXT_FILE = 'data.json'
+@app.route('/save_text', methods=['POST'])
+def save_text():
+    # Daten aus dem Formular holen
+    ken = request.form.get('ken')
+    barbie = request.form.get('barbie')
 
+    # Validierung: Sicherstellen, dass beide Felder ausgefüllt sind
+    if not ken or not barbie:
+        return jsonify({'error': 'Ken und Barbie müssen ausgefüllt sein'}), 400
+
+    # Neue Daten als einzelner Eintrag in einer Liste
+    new_entry = [{'ken': ken, 'barbie': barbie}]
+
+    # Speichere die neuen Daten und überschreibe die JSON-Datei
+    with open(TEXT_FILE, 'w', encoding='utf-8') as f:
+        json.dump(new_entry, f, ensure_ascii=False, indent=2)
+
+    return jsonify({'message': 'Daten gespeichert'}), 200
+
+@app.route('/load', methods=['GET'])
+def load_text():
+    if os.path.exists(TEXT_FILE):
+        with open(TEXT_FILE, 'r', encoding='utf-8') as f:
+            try:
+                texts = json.load(f)
+                return jsonify(texts), 200
+            except json.JSONDecodeError:
+                return jsonify({'error': 'Fehler beim Laden der Daten'}), 500
+    else:
+        return jsonify([]), 200
+    
 @app.route('/assign_menu', methods=['POST'])
 def assign_menu():
     menu_id = request.form.get('menu_id')
-    day = request.form.get('day')
+    date = request.form.get('date')  # <-- Datum statt Wochentag
 
     # Lade bestehende Menüs
     if os.path.exists(MENU_FILE):
@@ -254,13 +287,13 @@ def assign_menu():
                 menus = []
     else:
         menus = []
-
+    
     # Menü anhand der ID suchen
     selected_menu = next((menu for menu in menus if menu['id'] == menu_id), None)
 
     if selected_menu:
-        # ✅ Aktualisiere den Tag direkt im Menü
-        selected_menu['day'] = day
+        # ✅ Tag aus Menü entfernen (optional, da Zuweisung jetzt extern ist)
+        selected_menu.pop('day', None)
 
         # ✅ Überschreibe das Menü in der Menüliste
         for i, menu in enumerate(menus):
@@ -275,7 +308,7 @@ def assign_menu():
         # ✅ Speichere die Zuweisung in assignments.json (optional)
         assignment = {
             'menu_id': menu_id,
-            'day': day,
+            'date': date,
             'menu': selected_menu
         }
 
@@ -293,7 +326,7 @@ def assign_menu():
         with open('assignments.json', 'w', encoding='utf-8') as f:
             json.dump(assignments, f, ensure_ascii=False, indent=2)
 
-        flash(f'Menü {selected_menu["name"]} erfolgreich dem {day} zugewiesen!')
+        flash(f'Menü {selected_menu["name"]} erfolgreich dem {date} zugewiesen!')
     else:
         flash('Menü nicht gefunden!')
 
@@ -425,6 +458,90 @@ def display():
                            video_file=None,  # oder entferne es ganz
                            display_text=current_text,assigned_slides=assigned_slides)
 
+@app.route("/test", methods=["GET", "POST"])
+def index_test():
+    video_filename = None
+    duration = session.get('duration', 10)
+    today = datetime.now().strftime('%Y-%m-%d')  # Aktuelles Datum im Format YYYY-MM-DD
+
+    # Lade Zuweisungen
+    assignments = []
+    if os.path.exists('assignments.json'):
+        with open('assignments.json', 'r', encoding='utf-8') as f:
+            try:
+                assignments = json.load(f)
+            except json.JSONDecodeError:
+                assignments = []
+
+    # Lade Menü-Daten
+    menus = []
+    if os.path.exists(MENU_FILE):
+        with open(MENU_FILE, 'r', encoding='utf-8') as f:
+            try:
+                menus = json.load(f)
+            except json.JSONDecodeError:
+                menus = []
+
+    # Finde Menüs, die HEUTE zugewiesen sind
+    assigned_menus = []
+    for a in assignments:
+        if a.get('date') == today:
+            menu_id = a['menu']['id']
+            matching_menu = next((m for m in menus if m['id'] == menu_id), None)
+            if matching_menu:
+                assigned_menus.append(matching_menu)
+
+    # Lade Ken/Barbie-Daten
+    ken_barbie_data = []
+    if os.path.exists(TEXT_FILE):
+        with open(TEXT_FILE, 'r', encoding='utf-8') as f:
+            try:
+                ken_barbie_data = json.load(f)
+            except json.JSONDecodeError:
+                ken_barbie_data = []
+
+    # Nur Bild-Dateien extrahieren
+    image_extensions = ['jpg', 'jpeg', 'png', 'gif']
+    image_files = [
+        menu['filename'] for menu in assigned_menus
+        if menu['filename'].split('.')[-1].lower() in image_extensions
+    ]
+
+    # Datei-Upload (Video)
+    if request.method == 'POST':
+        file = request.files.get('hint')
+        if file:
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            video_filename = filename
+    else:
+        # Suche nach hintergrund-video
+        files = os.listdir(UPLOAD_FOLDER)
+        for f in files:
+            if f.lower().startswith("hintergrund") and f.lower().endswith(".mp4"):
+                video_filename = f
+                break
+
+    # Reduzierte Datenstruktur für das Template
+    assigned_slides = [{
+        'filename': m['filename'],
+        'name': m['name'],
+        'description': m['description']
+    } for m in assigned_menus]
+
+    # Ken & Barbie Namen setzen
+    ken_name = ken_barbie_data[0]['ken'] if ken_barbie_data else "Ken"
+    barbie_name = ken_barbie_data[0]['barbie'] if ken_barbie_data else "Barbie"
+
+    return render_template(
+        "test.html",
+        assigned_slides=assigned_slides,
+        video=video_filename,
+        image_files=image_files,
+        ken_name=ken_name,
+        barbie_name=barbie_name
+    )
 
 @app.route("/delete", methods=["POST"])
 def delete_file():

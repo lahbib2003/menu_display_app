@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bilder rotieren mit Zentrum</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: KorolevRounded;
+    }
+
+    /* Hintergrundvideo */
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -1; /* Hinter allen anderen Elementen */
+    }
+    header {
+        text-align: center;
+        font-size: 48px;
+        font-family:'KorolevRounded';
+        font-weight: 700;
+        margin-bottom: 30px;
+        color: #f8b400;
+        text-shadow: 2px 2px 5px #000;
+        animation: fadeDown 1s ease-in-out;
+    }
+    /* Zentrierung und Wrapper */
+    #wrapper {
+        position: relative;
+        width: 500px;
+        height: 500px;
+        margin: 0 auto 50px auto;
+        transform: translateX(-30px)
+    }
+
+    .rotating-ring {
+      position: absolute;
+      width: 150%;
+      height: 150%;
+      animation: rotate 150s linear infinite;
+    }
+
+    .image-slide {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 10px;
+      overflow: hidden;
+      filter: blur(2px);
+      opacity: 0.5;
+      transition: all 1s ease;
+    }
+
+    .image-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .image-slide h2,
+    .image-slide p {
+      transform: rotate(0deg); /* Gegenrotation, damit sie nicht mitdrehen */
+    }
+    .image-slide.center {
+      width: 350px;
+      height: 350px;
+      filter: none;
+      opacity: 1;
+      z-index: 10;
+    }
+    
+      #text-container {
+        text-align: center;
+        margin-top: 80px;
+        font-family: 'Korolev Rounded', sans-serif;
+      }
+      
+      #slide-name {
+        color: #f8b400;
+        font-family:'KorolevRounded';
+        font-size: 36px;
+        margin-top: 5px;
+        text-shadow: 2px 2px 5px #000;
+        font-weight: 700; /* Bold */
+      }
+      
+      #slide-description {
+        color: #fff;
+        font-family: 'KorolevRounded';
+        font-size: 25px;
+        margin-top: 5px;
+        font-weight: 700; /* Bold */
+      }
+      
+    
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .character-container {
+        display: flex;
+        float: left;
+        align-items: center;
+        gap: 20px;
+        padding: 20px 30px;
+        position: relative; /* WICHTIG: damit sich .speech-bubble daran orientiert */
+    }
+    .character-img {
+        max-width: 500px;
+        height: auto;
+        border-radius: 10px;
+        display: block;
+        margin-left: -50px;
+        position: relative;          /* ← notwendig für "top" */
+        top: -50px;                  /* ← verschiebt das Bild 50px nach oben */
+    }
+    .character-container2 {
+        display: flex;
+        float: right;
+        align-items: center;
+        gap: 20px;
+        padding: 20px 30px;
+        position: relative; /* WICHTIG: damit sich .speech-bubble daran orientiert */
+        top: -50px;
+    }
+    
+    .character-img2 {
+        max-width: 500px;
+        height: auto;
+        border-radius: 10px;
+        display: block;
+        margin-right: -50px; /* ← Bild mehr nach links */
+    }
+    @font-face {
+        font-family: 'KorolevRounded';
+        src: url('/static/fonts/KorolevRounded-Regular.otf') format('opentype');
+        font-weight: normal;
+        font-style: normal;
+      }
+      
+    @font-face {
+
+        font-family: "Korolev";
+      
+        font-style: normal;
+      
+        font-weight: auto;
+      
+        src: url("fonts /KorolevRounded-Heavy.otf"); /* IE9 Compat Modes */
+      
+        font-display: swap;
+      
+      }
+      
+      @font-face {
+      
+        font-family: "Korolev-Thin";
+      
+        font-style: normal;
+      
+        font-weight: auto;
+      
+        src: url("fonts /Korolev-Thin.otf"); /* IE9 Compat Modes */
+      
+        font-display: swap;
+      
+      }
+      
+      @font-face {
+        font-family: "Korolev-Light";
+    font-style: normal;
+      font-weight: auto;
+        src: url("fonts/Korolev-Light.otf"); /* IE9 Compat Modes */
+      
+        font-display: swap;
+      
+      }
+      
+      @font-face {
+      
+        font-family: "Korolev-Medium";
+      
+        font-style: normal;
+      
+        font-weight: auto;
+      
+        src: url("fonts /Korolev-Medium.otf"); /* IE9 Compat Modes */
+      
+        font-display: swap;
+      
+      }
+      
+    .speech-bubble2 {
+        position: absolute;
+        top: 15%;
+        right: 45%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        border: 2px solid #000;
+        padding: 12px 18px;
+        border-radius: 12px;
+        z-index: 10;
+        font-weight: bold;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        max-width: 320px;
+        /* KEINE ANIMATION HIER! */
+
+    }
+    .speech-bubble {
+        position: absolute;
+        top: 10%;
+        right: -6%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        border: 2px solid #000;
+        padding: 12px 18px;
+        border-radius: 12px;
+        z-index: 10;
+        font-weight: bold;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        max-width: 320px;
+        /* KEINE ANIMATION HIER! */
+    }
+    .speech-bubble2::before {
+        content: '';
+        position: absolute;
+        top: 100%;
+        right: 20px;
+        border-width: 10px 10px 0;
+        border-style: solid;
+        border-color: #fff transparent transparent transparent;
+    }
+    .speech-bubble::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 10px;
+        border-width: 10px 10px 0;
+        border-style: solid;
+        border-color: #fff transparent transparent transparent;
+    }
+    
+    .typing-text span {
+        white-space: nowrap;
+        border-right: 2px solid black;
+        display: inline-block;
+        overflow: hidden;
+        vertical-align: top;
+    }
+    
+    /* Nur Text animieren */
+    .line1 {
+        max-width: 0;
+        animation: typing1 6s steps(50, end) forwards, blink-caret 0.75s step-end infinite;
+        display: block;
+    }
+    .line2 {
+        max-width: 0;
+        animation: typing2 3s steps(50, end) forwards, blink-caret 0.75s step-end infinite;
+        animation-delay: 2.6s;
+        display: block;
+    }
+    .line3 {
+        max-width: 0;
+        animation: typing3 3s steps(30, end) forwards, blink-caret 0.75s step-end infinite;
+        animation-delay: 6s;
+        display: block;
+    }
+    .line4 {
+        max-width: 0;
+        animation: typing4 3s steps(28, end) forwards, blink-caret 0.75s step-end infinite;
+        animation-delay: 9s;
+        display: block;
+    }
+    
+    @keyframes typing1 {
+        from { max-width: 0 }
+        to { max-width: 50ch }
+    }
+    @keyframes typing2 {
+        from { max-width: 0 }
+        to { max-width: 23ch }
+    }
+    @keyframes typing3 {
+        from { max-width: 0 }
+        to { max-width: 30ch }
+    }
+    @keyframes typing4 {
+        from { max-width: 0 }
+        to { max-width: 28ch }
+    }
+    
+    @keyframes blink-caret {
+        0%, 100% { border-color: transparent }
+        50% { border-color: black }
+    }
+    .ticker {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: #f8b400;
+        overflow: hidden;
+        white-space: nowrap;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        z-index: 1000;
+    }
+    
+    .ticker-text {
+        display: inline-block;
+        padding-left: 100%;
+        animation: scrollText 15s linear infinite;
+        font-size: 18px;
+        font-weight: bold;
+        color: #000;
+    }
+    @keyframes scrollText {
+        0% { transform: translateX(0%); }
+        100% { transform: translateX(-100%); }
+    }
+    .qr-code-container {
+        position: fixed;
+        bottom: 50px;
+        right: 30px;
+        text-align: center;
+        z-index: 999;
+        animation: fadeInQR 1.5s ease;
+    }
+    
+    .qr-code-container img {
+        width: 100px;
+        height: auto;
+        opacity: 0.85;
+        transition: transform 0.3s ease;
+    }
+    
+    .qr-code-container img:hover {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    
+    .qr-code-container p {
+        margin: 5px 0 0;
+        font-size: 14px;
+        color: #fff;
+        text-shadow: 1px 1px 3px #000;
+    }
+  </style>
+</head>
+<body>
+    <header>Hungrig? Schau, was wir haben</header>
+    
+    <div class="character-container">
+        <img src="{{ url_for('static', filename='ken.png') }}" alt="Character" class="character-img" />
+        <div class="speech-bubble"> 
+            <div class="typing-text">
+                <span class="line1"> {{ ken_name }}! 👋</span>
+            
+              </div>
+        </div>
+      </div>
+    
+      <div class="character-container2">
+        <img src="{{ url_for('static', filename='barbie.png') }}" alt="Character" class="character-img2" />
+        <div class="speech-bubble2"> 
+            <div class="typing-text">
+                
+                <span class="line1"> {{ barbie_name }}! 👋</span>
+              </div>
+        </div>
+          
+        </div>
+      </div>
+    
+<!-- Hintergrundvideo -->
+<video autoplay muted loop preload="auto" id="bg-video" poster="{{ url_for('static', filename='fallback.jpg') }}">
+  {% if video %}
+    <source src="{{ url_for('static', filename='uploads/' + video) }}" type="video/mp4">
+  {% endif %}
+  Dein Browser unterstützt kein HTML5-Video.
+</video>
+
+<!-- Bild-Wrapper -->
+<!-- Wrapper für Bilder -->
+<div id="wrapper">
+    {% for slide in assigned_slides %}
+      <div class="image-slide" data-name="{{ slide.name }}" data-description="{{ slide.description }}">
+        <img src="{{ url_for('static', filename='uploads/' + slide.filename) }}" alt="{{ slide.name }}">
+      </div>
+    {% endfor %}
+  </div>
+  
+  <!-- Text wird dynamisch aktualisiert -->
+  <div id="text-container">
+    <h2 id="slide-name"></h2>
+    <p id="slide-description"></p>
+  </div>
+  
+  
+  </div>
+  
+     <!-- QR-Code -->
+     <div class="qr-code-container">
+        <img src="{{ url_for('static', filename='qrcode.png') }}" alt="QR Code">
+        <p>Für weitere Infos – jetzt scannen!</p>
+    </div>
+  <script>
+    // Für Textwechsel: eigenes Array
+    const textSlides = document.querySelectorAll('.image-slide');
+    const nameElement = document.getElementById('slide-name');
+    const descriptionElement = document.getElementById('slide-description');
+  
+    let lastVisibleSlide = null;
+  
+    function getCurrentSlide() {
+      const wrapper = document.getElementById('wrapper');
+      const wrapperRect = wrapper.getBoundingClientRect();
+      const wrapperCenter = wrapperRect.left + wrapperRect.width / 2;
+  
+      let bestMatch = null;
+      let smallestDistance = Infinity;
+  
+      textSlides.forEach(slide => {
+        const rect = slide.getBoundingClientRect();
+        const slideCenter = rect.left + rect.width / 2;
+        const distance = Math.abs(slideCenter - wrapperCenter);
+  
+        if (distance < smallestDistance) {
+          smallestDistance = distance;
+          bestMatch = slide;
+        }
+      });
+  
+      return bestMatch;
+    }
+  
+    function updateText() {
+      const current = getCurrentSlide();
+      if (current && current !== lastVisibleSlide) {
+        nameElement.textContent = current.dataset.name;
+        descriptionElement.textContent = current.dataset.description;
+        lastVisibleSlide = current;
+      }
+    }
+  
+    setInterval(updateText, 3000); // alle 300ms prüfen
+  </script>
+  
+  <script>
+    // Für die Rotation: eigene Variable
+    const rotatingSlides = document.querySelectorAll('.image-slide');
+    const radius = 500;
+    const centerX  = 300;
+    const centerY = 300;
+    const total = rotatingSlides.length;
+    let rotation = 0;
+    let centerIndex = 0;
+  
+    function updatePositions() {
+      for (let i = 0; i < total; i++) {
+        if (i === centerIndex) {
+          rotatingSlides[i].classList.add('center');
+          rotatingSlides[i].style.left = `${centerX - rotatingSlides[i].offsetWidth / 2}px`;
+          rotatingSlides[i].style.top = `${centerY - rotatingSlides[i].offsetHeight / 2}px`;
+          rotatingSlides[i].style.transform = 'rotate(0deg)';
+        } else {
+          rotatingSlides[i].classList.remove('center');
+          const posIndex = i < centerIndex ? i : i - 1;
+          const angle = rotation + (posIndex * (360 / (total - 1)));
+          const rad = angle * Math.PI / 180;
+          const x = centerX + radius * Math.cos(rad);
+          const y = centerY + radius * Math.sin(rad);
+  
+          rotatingSlides[i].style.left = `${x - rotatingSlides[i].offsetWidth / 2}px`;
+          rotatingSlides[i].style.top = `${y - rotatingSlides[i].offsetHeight / 2}px`;
+          rotatingSlides[i].style.transform = `rotate(${angle}deg)`;
+        }
+      }
+    }
+  
+    function animate() {
+      rotation = (rotation + 1) % 360;
+      updatePositions();
+      requestAnimationFrame(animate);
+    }
+  
+    setInterval(() => {
+      centerIndex = (centerIndex + 1) % total;
+    }, 10000);
+  
+    animate();
+  </script>
+  <!-- Ticker -->
+  <div class="ticker">
+    <div class="ticker-text">🎉 Heute: High Protein Essen im Menü | 🍝 Neue Pasta-Kreationen ! | 📱 QR Code scannen Und Unsere Produkte Bestellen  !</div>
+</div>
+</body>
+</html>

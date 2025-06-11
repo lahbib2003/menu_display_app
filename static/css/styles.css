@@ -426,6 +426,8 @@ header {
     animation-delay: 9s;
   display: block;
 }
+
+
 @keyframes typing {
     from { width: 0 }
     to { width: 12ch }
@@ -448,3 +450,4 @@ header {
     0%, 100% { border-color: transparent }
     50% { border-color: black }
 }
+

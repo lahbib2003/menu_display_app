@@ -1,1 +1,6 @@
-Hello und Wilkommen bei dreiKoeche
+[
+  {
+    "ken": "testing for ken",
+    "barbie": "testing for barbie"
+  }
+]

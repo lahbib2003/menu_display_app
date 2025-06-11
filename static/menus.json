@@ -1,17 +1,9 @@
 [
   {
-    "id": "79604584-a820-44e9-a2af-2d476c77bb0c",
-    "filename": "Alaska-Seelachs-in-Sahnesauce-mit-Curryreis.png",
-    "name": "Alaska-Seelachs-in-Sahnesauce-mit-Curryreis",
-    "description": "Alaska-Seelachs-in-Sahnesauce-mit-Curryreis",
-    "day": "Monday"
-  },
-  {
     "id": "353e1994-29a1-4917-9684-13f1460d56db",
     "filename": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen.png",
     "name": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen",
-    "description": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen",
-    "day": "Tuesday"
+    "description": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen"
   },
   {
     "id": "0810be86-2aad-483d-aecc-6b7d4df423fc",
@@ -28,20 +20,6 @@
     "day": "Tuesday"
   },
   {
-    "id": "9e20f95c-7d68-46f6-b979-abad561e3508",
-    "filename": "IMG_3182.jpeg",
-    "name": "Tes",
-    "description": "Test",
-    "day": "Tuesday"
-  },
-  {
-    "id": "123f847c-1dee-441c-abdb-5440740d6092",
-    "filename": "Gemuese-Lassagne-mit-Edamame.png",
-    "name": "Gemuese-Lassagne-mit-Edamame",
-    "description": "Gemuese-Lassagne-mit-Edamame ",
-    "day": "Tuesday"
-  },
-  {
     "id": "f4e77fc5-59ed-4f00-a436-f1edf8335905",
     "filename": "Protein-Pasta-Paprika.png",
     "name": "Protein-Pasta-Paprika",
@@ -53,7 +31,7 @@
     "filename": "Rinderbolognese-Linsen-Fusilli.png",
     "name": "Rinderbolognese-Linsen-Fusilli",
     "description": "Rinderbolognese-Linsen-Fusilli   ab 35g protein pro protion ",
-    "day": "Thursday"
+    "day": "Monday"
   },
   {
     "id": "baaf69b2-d461-4a55-9f5b-acee8f8f3359",
@@ -68,5 +46,35 @@
     "name": "Chili-con-Carne-mit-Rindfleisch",
     "description": "Chili-con-Carne-mit-Rindfleisch   ap 35 g protein pro protion",
     "day": "Tuesday"
+  },
+  {
+    "id": "1e18c69e-e333-402c-b861-357268e0c45d",
+    "filename": "Chili-con-Carne-mit-Rindfleisch.png",
+    "name": "Chili-con-Carne-mit-Rindfleisch",
+    "description": "Chili-con-Carne-mit-Rindfleisch"
+  },
+  {
+    "id": "db0e9b2d-d090-4729-b6e9-2ed86802d34b",
+    "filename": "Roter-Couscous-Zucchini-und-Haehnchen.png",
+    "name": "Roter-Couscous-Zucchini-und-Haehnchen",
+    "description": "Roter-Couscous-Zucchini-und-Haehnchen"
+  },
+  {
+    "id": "75bb9a3d-3dcd-4c63-85fa-e6f8c9f337dc",
+    "filename": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage.png",
+    "name": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage",
+    "description": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage"
+  },
+  {
+    "id": "0d8c6b79-4fc0-49d8-9bfc-b7b36fb78d02",
+    "filename": "Auberginenauflauf-mit-Rindfleisch.png",
+    "name": "Auberginenauflauf-mit-Rindfleisch",
+    "description": "Auberginenauflauf-mit-Rindfleisch"
+  },
+  {
+    "id": "75ef5282-e0a8-4c5b-bf2c-fd4f4206a072",
+    "filename": "Gemuese-Lassagne-mit-Edamame.png",
+    "name": "Gemuese-Lassagne-mit-Edamame",
+    "description": "Gemuese-Lassagne-mit-Edamame "
   }
 ]

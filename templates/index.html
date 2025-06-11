@@ -56,60 +56,72 @@
 <!-- Slideshow Essensbereiche -->
 <!-- Slideshow Essensbereiche -->
 <!-- Slideshow Essensbereiche -->
+
 <div class="carousel">
-    <div class="carousel-track">
-      {% for slide in assigned_slides %}
-        {% set ext = slide.filename.split('.')[-1].lower() %}
-        {% if ext in ['jpg', 'jpeg', 'png', 'gif'] %}
-          <div class="slide">
-            <img src="{{ url_for('static', filename='uploads/' + slide.filename) }}" alt="Slide {{ loop.index0 }}">
-            <h2>{{ slide.name }}</h2>
-            <p>{{ slide.description }}</p>
-          </div>
-        {% endif %}
-      {% endfor %}
-    </div>
+  <div class="carousel-track">
+    {% for slide in assigned_slides %}
+      {% set ext = slide.filename.split('.')[-1].lower() %}
+      {% if ext in ['jpg', 'jpeg', 'png', 'gif'] %}
+        <div class="slide">
+          <img src="{{ url_for('static', filename='uploads/' + slide.filename) }}" alt="Slide {{ loop.index0 }}">
+          <h2>{{ slide.name }}</h2>
+          <p>{{ slide.description }}</p>
+        </div>
+      {% endif %}
+    {% endfor %}
   </div>
-  
+</div>
+
      <!-- QR-Code -->
      <div class="qr-code-container">
         <img src="{{ url_for('static', filename='qrcode.png') }}" alt="QR Code">
         <p>Für weitere Infos – jetzt scannen!</p>
     </div>
     <script>
-        let currentIndex = 0;
-        const centerImages = document.querySelectorAll('.center-image');
-        
-        setInterval(() => {
-          centerImages[currentIndex].classList.remove('active');
-          currentIndex = (currentIndex + 1) % centerImages.length;
-          centerImages[currentIndex].classList.add('active');
-        }, 5000);
-    </script>
-    <script>
-        const images = document.querySelectorAll('.slideshow img');
-        let current = 0;
+      const slides = document.querySelectorAll('.image-slide');
+      const radius = 500; // Größerer Radius für mehr Abstand
+      const centerX  =300;
+      const centerY = 300;
+      const total = slides.length;
+      let rotation = 0;
+      let centerIndex = 0;
     
-        function showNextImage() {
-          images.forEach((img, i) => {
-            img.classList.remove('active', 'blurred');
-            if (i === current) {
-              img.classList.add('active');
-            } else if (i === (current - 1 + images.length) % images.length) {
-              img.classList.add('blurred');
-            }
-          });
-    
-          current = (current + 1) % images.length;
+      function updatePositions() {
+        for(let i = 0; i < total; i++) {
+          if(i === centerIndex) {
+            slides[i].classList.add('center');
+            slides[i].style.left = `${centerX - 125}px`;
+            slides[i].style.top = `${centerY - 125}px`;
+          } else {
+            slides[i].classList.remove('center');
+            const posIndex = i < centerIndex ? i : i - 1;
+            const angle = rotation + (posIndex * 180);
+            const rad = angle * Math.PI / 180;
+            const x = centerX + radius * Math.cos(rad);
+            const y = centerY + radius * Math.sin(rad);
+            slides[i].style.left = `${x - 100}px`;
+            slides[i].style.top = `${y - 100}px`;
+          }
         }
+      }
     
-        showNextImage();
-        setInterval(showNextImage, 4000); // Alle 4 Sekunden wechseln
-      </script>
+      function animate() {
+        rotation = (rotation + 1) % 360;
+        updatePositions();
+        requestAnimationFrame(animate);
+      }
+    
+      setInterval(() => {
+        centerIndex = (centerIndex + 1) % total;
+      }, 10000);
+    
+      animate();
+    </script>
     
     <!-- Ticker -->
     <div class="ticker">
         <div class="ticker-text">🎉 Heute: High Protein Essen im Menü | 🍝 Neue Pasta-Kreationen online! | 📱 QR Code scannen Und Unsere Produkte Ansehen !</div>
     </div>
+    
 </body>
 </html>
