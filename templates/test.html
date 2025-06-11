@@ -9,7 +9,7 @@
       padding: 0;
       height: 100%;
       overflow: hidden;
-      font-family: KorolevRounded;
+      font-family: 'KorolevRounded';
     }
 
     /* Hintergrundvideo */
@@ -25,7 +25,7 @@
     header {
         text-align: center;
         font-size: 48px;
-        font-family:'KorolevRounded';
+        font-family:'KorolevRounded'";
         font-weight: 700;
         margin-bottom: 30px;
         color: #f8b400;
@@ -140,62 +140,19 @@
     }
     @font-face {
         font-family: 'KorolevRounded';
-        src: url('/static/fonts/KorolevRounded-Regular.otf') format('opentype');
+        src: url('/static/fonts/KorolevRounded-Heavy.otf') format('opentype');
         font-weight: normal;
         font-style: normal;
-      }
-      
-    @font-face {
-
-        font-family: "Korolev";
-      
-        font-style: normal;
-      
-        font-weight: auto;
-      
-        src: url("fonts /KorolevRounded-Heavy.otf"); /* IE9 Compat Modes */
-      
-        font-display: swap;
-      
-      }
-      
-      @font-face {
-      
-        font-family: "Korolev-Thin";
-      
-        font-style: normal;
-      
-        font-weight: auto;
-      
-        src: url("fonts /Korolev-Thin.otf"); /* IE9 Compat Modes */
-      
-        font-display: swap;
-      
-      }
-      
-      @font-face {
-        font-family: "Korolev-Light";
-    font-style: normal;
-      font-weight: auto;
-        src: url("fonts/Korolev-Light.otf"); /* IE9 Compat Modes */
-      
-        font-display: swap;
-      
-      }
-      
-      @font-face {
-      
-        font-family: "Korolev-Medium";
-      
-        font-style: normal;
-      
-        font-weight: auto;
-      
-        src: url("fonts /Korolev-Medium.otf"); /* IE9 Compat Modes */
-      
-        font-display: swap;
-      
-      }
+    }
+    
+    /* Beispiel: Überschrift-Stil */
+    .custom-header {
+        font-family: 'KorolevRounded', sans-serif;
+        font-size: 2.5em;
+        font-weight: normal;
+        color: #333;
+    }
+    
       
     .speech-bubble2 {
         position: absolute;
@@ -250,57 +207,38 @@
     .typing-text span {
         white-space: nowrap;
         border-right: 2px solid black;
-        display: inline-block;
+        display: block;
         overflow: hidden;
-        vertical-align: top;
-    }
+        max-width: 0;
+        animation: typing 3s steps(40, end) forwards, blink-caret 0.75s step-end infinite;
+      }
     
     /* Nur Text animieren */
-    .line1 {
-        max-width: 0;
-        animation: typing1 6s steps(50, end) forwards, blink-caret 0.75s step-end infinite;
-        display: block;
-    }
-    .line2 {
-        max-width: 0;
-        animation: typing2 3s steps(50, end) forwards, blink-caret 0.75s step-end infinite;
-        animation-delay: 2.6s;
-        display: block;
-    }
-    .line3 {
-        max-width: 0;
-        animation: typing3 3s steps(30, end) forwards, blink-caret 0.75s step-end infinite;
+    .typing-text span:nth-child(1) {
+        animation-delay: 0s;
+      }
+      .typing-text span:nth-child(2) {
+        animation-delay: 3s;
+      }
+      .typing-text span:nth-child(3) {
         animation-delay: 6s;
-        display: block;
-    }
-    .line4 {
-        max-width: 0;
-        animation: typing4 3s steps(28, end) forwards, blink-caret 0.75s step-end infinite;
+      }
+      .typing-text span:nth-child(4) {
         animation-delay: 9s;
-        display: block;
-    }
+      }
+      .typing-text span:nth-child(5) {
+        animation-delay: 12s;
+      }
     
-    @keyframes typing1 {
+      @keyframes typing {
         from { max-width: 0 }
         to { max-width: 50ch }
-    }
-    @keyframes typing2 {
-        from { max-width: 0 }
-        to { max-width: 23ch }
-    }
-    @keyframes typing3 {
-        from { max-width: 0 }
-        to { max-width: 30ch }
-    }
-    @keyframes typing4 {
-        from { max-width: 0 }
-        to { max-width: 28ch }
-    }
-    
-    @keyframes blink-caret {
+      }
+      
+      @keyframes blink-caret {
         0%, 100% { border-color: transparent }
         50% { border-color: black }
-    }
+      }
     .ticker {
         position: fixed;
         bottom: 0;
@@ -353,10 +291,19 @@
         color: #fff;
         text-shadow: 1px 1px 3px #000;
     }
+    #nutrition-tag {
+        margin-top: 10px;
+        font-weight: bold;
+        font-size: 1.4em;
+        color: #27ae60;
+        text-align: center;
+      }
+      
   </style>
 </head>
 <body>
-    <header>Hungrig? Schau, was wir haben</header>
+    <header>{{ header_text }}</header>
+
     
     <div class="character-container">
         <img src="{{ url_for('static', filename='ken.png') }}" alt="Character" class="character-img" />
@@ -406,7 +353,9 @@
   
   
   </div>
-  
+  <div id="nutrition-tag">
+    <p id="nutrition-text"></p>
+  </div>
      <!-- QR-Code -->
      <div class="qr-code-container">
         <img src="{{ url_for('static', filename='qrcode.png') }}" alt="QR Code">
@@ -499,8 +448,20 @@
     animate();
   </script>
   <!-- Ticker -->
+  {% if ticker_enabled %}
   <div class="ticker">
-    <div class="ticker-text">🎉 Heute: High Protein Essen im Menü | 🍝 Neue Pasta-Kreationen ! | 📱 QR Code scannen Und Unsere Produkte Bestellen  !</div>
+  <div class="ticker-text">🎉 Heute: High Protein Essen im Menü | 🍝 Neue Pasta-Kreationen ! | 📱 QR Code scannen Und Unsere Produkte Bestellen  !</div>
+  <script>
+      // Optional: Ticker-Animation per JavaScript starten
+      const ticker = document.getElementById('ticker');
+      ticker.style.whiteSpace = 'nowrap';
+      ticker.style.overflow = 'hidden';
+      ticker.style.animation = 'scroll 15s linear infinite';
+  </script>
 </div>
+  {% endif %}
+  
+  
+  
 </body>
 </html>

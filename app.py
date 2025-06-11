@@ -141,8 +141,16 @@ def delete_menu():
 def admin():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
-  
-  
+    config = load_config()
+    header_text = config.get('header_text', "Hungrig? Schau, was wir haben")
+    ticker_enabled = True
+    if os.path.exists('settings.json'):
+        with open('settings.json', 'r', encoding='utf-8') as f:
+            try:
+                settings = json.load(f)
+                ticker_enabled = settings.get('ticker_enabled', True)
+            except json.JSONDecodeError:
+                ticker_enabled = True
     if os.path.exists(ASSIGNMENTS_FILE):
         with open(ASSIGNMENTS_FILE, 'r', encoding='utf-8') as f:
             assigned_menus = json.load(f)
@@ -191,7 +199,7 @@ def admin():
             grouped_files[day] = []
         grouped_files[day].append(file)
 
-    return render_template('admin.html', media_files=media_files, grouped_files=grouped_files,  menus=menus,assigned_menus=assigned_menus)
+    return render_template('admin.html', media_files=media_files,ticker_enabled=ticker_enabled, grouped_files=grouped_files,  menus=menus,assigned_menus=assigned_menus)
 
 
 @app.route('/upload_menu', methods=['POST'])
@@ -463,7 +471,8 @@ def index_test():
     video_filename = None
     duration = session.get('duration', 10)
     today = datetime.now().strftime('%Y-%m-%d')  # Aktuelles Datum im Format YYYY-MM-DD
-
+    config = load_config()
+    header_text = config.get('header_text', "Hungrig? Schau, was wir haben")
     # Lade Zuweisungen
     assignments = []
     if os.path.exists('assignments.json'):
@@ -533,6 +542,14 @@ def index_test():
     # Ken & Barbie Namen setzen
     ken_name = ken_barbie_data[0]['ken'] if ken_barbie_data else "Ken"
     barbie_name = ken_barbie_data[0]['barbie'] if ken_barbie_data else "Barbie"
+    ticker_enabled = True
+    if os.path.exists('settings.json'):
+        with open('settings.json', 'r', encoding='utf-8') as f:
+            try:
+                settings = json.load(f)
+                ticker_enabled = settings.get('ticker_enabled', True)
+            except json.JSONDecodeError:
+                ticker_enabled = True
 
     return render_template(
         "test.html",
@@ -540,7 +557,8 @@ def index_test():
         video=video_filename,
         image_files=image_files,
         ken_name=ken_name,
-        barbie_name=barbie_name
+        barbie_name=barbie_name,
+        ticker_enabled=ticker_enabled,header_text=header_text
     )
 
 @app.route("/delete", methods=["POST"])
@@ -593,6 +611,42 @@ def delete_menus():
             json.dump(assignments, f, ensure_ascii=False, indent=2)
 
     flash("Menü und zugehörige Zuweisungen wurden gelöscht.")
+    return redirect(url_for('admin'))
+@app.route('/toggle_ticker', methods=['POST'])
+def toggle_ticker():
+    enabled = request.form.get('ticker_enabled') == 'on'
+
+    # Speichern in settings.json
+    with open('settings.json', 'w', encoding='utf-8') as f:
+        json.dump({'ticker_enabled': enabled}, f, ensure_ascii=False, indent=2)
+
+    flash('Ticker-Einstellung aktualisiert!')
+    return redirect(url_for('admin'))
+#header config 
+
+
+CONFIG_FILE = 'config.json'
+
+def load_config():
+    if os.path.exists(CONFIG_FILE):
+        with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
+            try:
+                return json.load(f)
+            except json.JSONDecodeError:
+                return {}
+    return {}
+
+def save_config(config):
+    with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
+        json.dump(config, f, ensure_ascii=False, indent=2)
+
+@app.route('/update_header', methods=['POST'])
+def update_header():
+    new_header = request.form.get('header_text')
+    config = load_config()
+    config['header_text'] = new_header
+    save_config(config)
+    flash('Header-Text wurde aktualisiert!')
     return redirect(url_for('admin'))
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
