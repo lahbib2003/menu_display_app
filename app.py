@@ -211,7 +211,9 @@ def upload_menu():
     image = request.files['menu_image']
     name = request.form.get('menu_name')
     description = request.form.get('menu_description')
-
+    specification = request.form.get('menu_specification')
+    component_count = int(request.form.get('component_count', 0))
+    components = request.form.getlist('components[]')  # Liste der Komponentennamen
     if not image or image.filename == '':
         flash('Ungültige Bilddatei.')
         return redirect(url_for('admin'))
@@ -229,7 +231,9 @@ def upload_menu():
         'id': str(uuid.uuid4()),  # Generiere eine einzigartige ID für jedes Menü
         'filename': filename,
         'name': name,
-        'description': description
+        'description': description,
+        'specification':specification,
+        'components': components  # Liste der Komponentennamen 
     }
 
     # Bestehende Menüs laden oder neues Array starten
@@ -534,10 +538,11 @@ def index_test():
 
     # Reduzierte Datenstruktur für das Template
     assigned_slides = [{
-        'filename': m['filename'],
-        'name': m['name'],
-        'description': m['description']
-    } for m in assigned_menus]
+            'filename': m.get('filename', ''),
+            'name': m.get('name', 'Unbenannt'),
+            'description': m.get('description', 'Keine Beschreibung'),
+            'specification': m.get('specification', 'Nicht angegeben')
+        } for m in assigned_menus]
 
     # Ken & Barbie Namen setzen
     ken_name = ken_barbie_data[0]['ken'] if ken_barbie_data else "Ken"

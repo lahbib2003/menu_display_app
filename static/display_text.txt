@@ -1,6 +1,6 @@
 [
   {
-    "ken": "hi süßer",
-    "barbie": "hallo ihr lieben"
+    "ken": "ousssama is testing",
+    "barbie": "ousssama is testingd"
   }
 ]

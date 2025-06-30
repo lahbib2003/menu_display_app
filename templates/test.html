@@ -99,6 +99,15 @@
         font-weight: 700; /* Bold */
       }
       
+      #slide-specification {
+        font-style: 'KorolevRounded';
+        color: #fff;
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+    #slide-specification {
+       
+        color: #fff;}
     
     @keyframes rotate {
       from { transform: rotate(0deg); }
@@ -339,17 +348,20 @@
 <!-- Wrapper für Bilder -->
 <div id="wrapper">
     {% for slide in assigned_slides %}
-      <div class="image-slide" data-name="{{ slide.name }}" data-description="{{ slide.description }}">
+      <div class="image-slide" data-name="{{ slide.name }}" 
+      data-description="{{ slide.description }}" 
+      data-specification="{{ slide.specification }}">
         <img src="{{ url_for('static', filename='uploads/' + slide.filename) }}" alt="{{ slide.name }}">
       </div>
     {% endfor %}
   </div>
   
-  <!-- Text wird dynamisch aktualisiert -->
-  <div id="text-container">
-    <h2 id="slide-name"></h2>
-    <p id="slide-description"></p>
-  </div>
+ <!-- Text wird dynamisch aktualisiert -->
+ <div id="text-container">
+  <p id="slide-specification"><strong>Spezifikation:</strong> <span></span></p>
+  <h2 id="slide-name"></h2>
+  <p id="slide-description"></p>
+</div>
   
   
   </div>
@@ -361,47 +373,62 @@
         <img src="{{ url_for('static', filename='qrcode.png') }}" alt="QR Code">
         <p>Für weitere Infos – jetzt scannen!</p>
     </div>
-  <script>
-    // Für Textwechsel: eigenes Array
-    const textSlides = document.querySelectorAll('.image-slide');
-    const nameElement = document.getElementById('slide-name');
-    const descriptionElement = document.getElementById('slide-description');
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+          const textSlides = document.querySelectorAll('.image-slide');
+          const nameElement = document.getElementById('slide-name');
+          const descriptionElement = document.getElementById('slide-description');
+          const specificationElement = document.getElementById('slide-specification').querySelector('span');
   
-    let lastVisibleSlide = null;
+          let lastVisibleSlide = null;
   
-    function getCurrentSlide() {
-      const wrapper = document.getElementById('wrapper');
-      const wrapperRect = wrapper.getBoundingClientRect();
-      const wrapperCenter = wrapperRect.left + wrapperRect.width / 2;
+          const formatSpecification = (spec) => {
+              const specMap = {
+                  'vegan': 'Vegan',
+                  'high_protein': 'High Protein',
+                  'low_carbs': 'Low Carbs',
+                  'none': 'Keine Spezifikation',
+                  'Nicht angegeben': 'Nicht angegeben'
+              };
+              return specMap[spec] || spec;
+          };
   
-      let bestMatch = null;
-      let smallestDistance = Infinity;
+          function getCurrentSlide() {
+              const wrapper = document.getElementById('wrapper');
+              const wrapperRect = wrapper.getBoundingClientRect();
+              const wrapperCenter = wrapperRect.left + wrapperRect.width / 2;
   
-      textSlides.forEach(slide => {
-        const rect = slide.getBoundingClientRect();
-        const slideCenter = rect.left + rect.width / 2;
-        const distance = Math.abs(slideCenter - wrapperCenter);
+              let bestMatch = null;
+              let smallestDistance = Infinity;
   
-        if (distance < smallestDistance) {
-          smallestDistance = distance;
-          bestMatch = slide;
-        }
+              textSlides.forEach(slide => {
+                  const rect = slide.getBoundingClientRect();
+                  const slideCenter = rect.left + rect.width / 2;
+                  const distance = Math.abs(slideCenter - wrapperCenter);
+  
+                  if (distance < smallestDistance) {
+                      smallestDistance = distance;
+                      bestMatch = slide;
+                  }
+              });
+  
+              return bestMatch;
+          }
+  
+          function updateText() {
+              const current = getCurrentSlide();
+              if (current && current !== lastVisibleSlide) {
+                  nameElement.textContent = current.dataset.name || 'Unbenannt';
+                  descriptionElement.textContent = current.dataset.description || 'Keine Beschreibung';
+                  specificationElement.textContent = formatSpecification(current.dataset.specification || 'Nicht angegeben');
+                  lastVisibleSlide = current;
+              }
+          }
+  
+          updateText();
+          setInterval(updateText, 3000);
       });
-  
-      return bestMatch;
-    }
-  
-    function updateText() {
-      const current = getCurrentSlide();
-      if (current && current !== lastVisibleSlide) {
-        nameElement.textContent = current.dataset.name;
-        descriptionElement.textContent = current.dataset.description;
-        lastVisibleSlide = current;
-      }
-    }
-  
-    setInterval(updateText, 3000); // alle 300ms prüfen
-  </script>
+      </script>
   
   <script>
     // Für die Rotation: eigene Variable

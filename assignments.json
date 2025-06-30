@@ -20,16 +20,6 @@
     }
   },
   {
-    "menu_id": "353e1994-29a1-4917-9684-13f1460d56db",
-    "date": "2025-06-12",
-    "menu": {
-      "id": "353e1994-29a1-4917-9684-13f1460d56db",
-      "filename": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen.png",
-      "name": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen",
-      "description": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen"
-    }
-  },
-  {
     "menu_id": "0d8c6b79-4fc0-49d8-9bfc-b7b36fb78d02",
     "date": "2025-06-13",
     "menu": {
@@ -57,6 +47,55 @@
       "filename": "Gemuese-Lassagne-mit-Edamame.png",
       "name": "Gemuese-Lassagne-mit-Edamame",
       "description": "Gemuese-Lassagne-mit-Edamame "
+    }
+  },
+  {
+    "menu_id": "0f8a4a0c-4abb-4465-b11b-4786043f7a2e",
+    "date": "2025-06-30",
+    "menu": {
+      "id": "0f8a4a0c-4abb-4465-b11b-4786043f7a2e",
+      "filename": "Rindfleisch-Kartoffeln-Weisskohl.png",
+      "name": "Rindfleisch-Kartoffeln-Weisskohl",
+      "description": "Rindfleisch-Kartoffeln-Weisskohl"
+    }
+  },
+  {
+    "menu_id": "2bf66f87-30e5-4012-bcf5-f697b2a30cea",
+    "date": "2025-06-30",
+    "menu": {
+      "id": "2bf66f87-30e5-4012-bcf5-f697b2a30cea",
+      "filename": "Vegane-Kichererbesen-Masala-Cous-Cous.png",
+      "name": "Vegane-Kichererbesen-Masala-Cous-Cous",
+      "description": "ab 35g eiweiß PRO PROTION ",
+      "specification": "vegan"
+    }
+  },
+  {
+    "menu_id": "749fd49b-f915-49bd-9f1f-b23643f83070",
+    "date": "2025-06-30",
+    "menu": {
+      "id": "749fd49b-f915-49bd-9f1f-b23643f83070",
+      "filename": "Haehnchen-in-Kokossauce-mit-Suesskartoffelpueree.png",
+      "name": "Haehnchen-in-Kokossauce-mit-Suesskartoffelpueree",
+      "description": "Haehnchen-in-Kokossauce-mit-Suesskartoffelpueree",
+      "specification": "low_carbs",
+      "components": []
+    }
+  },
+  {
+    "menu_id": "4e6cba74-1d49-48a1-83dc-24ea8fb0eb7c",
+    "date": "2025-06-30",
+    "menu": {
+      "id": "4e6cba74-1d49-48a1-83dc-24ea8fb0eb7c",
+      "filename": "Indisches-Kicherebsen-Masala.png",
+      "name": "Indisches-Kicherebsen-Masala",
+      "description": "Indisches-Kicherebsen-Masala",
+      "specification": "vegan",
+      "components": [
+        "kircher",
+        "soße",
+        "Bulgur"
+      ]
     }
   }
 ]
