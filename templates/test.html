@@ -76,38 +76,62 @@
       z-index: 10;
     }
     
-      #text-container {
-        text-align: center;
-        margin-top: 80px;
-        font-family: 'Korolev Rounded', sans-serif;
-      }
-      
-      #slide-name {
-        color: #f8b400;
-        font-family:'KorolevRounded';
-        font-size: 36px;
-        margin-top: 5px;
-        text-shadow: 2px 2px 5px #000;
-        font-weight: 700; /* Bold */
-      }
-      
-      #slide-description {
-        color: #fff;
-        font-family: 'KorolevRounded';
-        font-size: 25px;
-        margin-top: 5px;
-        font-weight: 700; /* Bold */
-      }
-      
-      #slide-specification {
-        font-style: 'KorolevRounded';
-        color: #fff;
-        font-size: 20px;
-        margin-bottom: 10px;
+    #text-container {
+      text-align: center;
+      margin-top: 80px;
+      font-family: 'Korolev Rounded';
     }
+    
+    #slide-name {
+      color: #f8b400;
+      font-family: 'KorolevRounded';
+      font-size: 36px;
+      margin-top: 5px;
+      text-shadow: 2px 2px 5px #000;
+      font-weight: 700;
+    }
+    
+    #slide-description {
+      color: #fff;
+      font-family: 'KorolevRounded';
+      font-size: 25px;
+      margin-top: 5px;
+      font-weight: 700;
+    }
+    
     #slide-specification {
-       
-        color: #fff;}
+      font-family: 'KorolevRounded';
+      color: #fff;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    
+    #slide-components {
+      display: flex;
+      justify-content: center;       /* Zentriert die Komponenten */
+      align-items: center;           /* Zentriert sie vertikal, falls nötig */
+      flex-wrap: wrap;               /* Bei Bedarf umbrechen */
+      gap: 12px;
+      margin-top: 15px;
+      margin-bottom: 20px;
+      font-family: 'KorolevRounded';
+    }
+    
+    .component-item {
+      background-color: #fff2dc;     /* Helles Beige für Lesbarkeit */
+      color: #cd853f;                /* Warme Braun-Orange-Farbe */
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 20px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
+    
+    .component-item:hover {
+      transform: scale(1.05);        /* Kleine Hover-Animation */
+    }
     
     @keyframes rotate {
       from { transform: rotate(0deg); }
@@ -166,7 +190,7 @@
     .speech-bubble2 {
         position: absolute;
         top: 15%;
-        right: 45%;
+        right: 35%;
         transform: translate(-50%, -50%);
         background-color: white;
         border: 2px solid #000;
@@ -182,7 +206,7 @@
     .speech-bubble {
         position: absolute;
         top: 10%;
-        right: -6%;
+        right: -20%;
         transform: translate(-50%, -50%);
         background-color: white;
         border: 2px solid #000;
@@ -198,7 +222,7 @@
         content: '';
         position: absolute;
         top: 100%;
-        right: 20px;
+        right: 30px;
         border-width: 10px 10px 0;
         border-style: solid;
         border-color: #fff transparent transparent transparent;
@@ -219,7 +243,7 @@
         display: block;
         overflow: hidden;
         max-width: 0;
-        animation: typing 3s steps(40, end) forwards, blink-caret 0.75s step-end infinite;
+        animation: typing 3s steps(80, end) forwards, blink-caret 0.75s step-end infinite;
       }
     
     /* Nur Text animieren */
@@ -241,7 +265,7 @@
     
       @keyframes typing {
         from { max-width: 0 }
-        to { max-width: 50ch }
+        to { max-width: 60ch }
       }
       
       @keyframes blink-caret {
@@ -348,19 +372,23 @@
 <!-- Wrapper für Bilder -->
 <div id="wrapper">
     {% for slide in assigned_slides %}
-      <div class="image-slide" data-name="{{ slide.name }}" 
-      data-description="{{ slide.description }}" 
-      data-specification="{{ slide.specification }}">
-        <img src="{{ url_for('static', filename='uploads/' + slide.filename) }}" alt="{{ slide.name }}">
-      </div>
+    <div class="image-slide" 
+    data-name="{{ slide.name }}" 
+    data-description="{{ slide.description }}" 
+    data-specification="{{ slide.specification }}"
+    data-components='{{ slide.components | tojson | safe }}'
+>
+ <img src="{{ url_for('static', filename='uploads/' + slide.filename) }}" alt="{{ slide.name }}">
+</div>
     {% endfor %}
   </div>
   
  <!-- Text wird dynamisch aktualisiert -->
  <div id="text-container">
-  <p id="slide-specification"><strong>Spezifikation:</strong> <span></span></p>
+  <p id="slide-specification"> <span></span></p>
   <h2 id="slide-name"></h2>
   <p id="slide-description"></p>
+  <div id="slide-components"></div> <!-- Container für Komponenten -->
 </div>
   
   
@@ -379,9 +407,11 @@
           const nameElement = document.getElementById('slide-name');
           const descriptionElement = document.getElementById('slide-description');
           const specificationElement = document.getElementById('slide-specification').querySelector('span');
-  
+          const componentsContainer = document.getElementById('slide-components');
+      
           let lastVisibleSlide = null;
-  
+      
+          // Funktion zur Formatierung der Spezifikation
           const formatSpecification = (spec) => {
               const specMap = {
                   'vegan': 'Vegan',
@@ -392,39 +422,60 @@
               };
               return specMap[spec] || spec;
           };
-  
+      
+          // Funktion zur Formatierung der Komponenten
+          const formatComponents = (components) => {
+              if (!components || components.length === 0) {
+                  return '<p class="component-item">Keine Komponenten</p>';
+              }
+              return components
+                  .map((component, index) => `<p class="component-item">#Komponente ${index + 1}: ${component}</p>`)
+                  .join('');
+          };
+      
           function getCurrentSlide() {
               const wrapper = document.getElementById('wrapper');
               const wrapperRect = wrapper.getBoundingClientRect();
               const wrapperCenter = wrapperRect.left + wrapperRect.width / 2;
-  
+      
               let bestMatch = null;
               let smallestDistance = Infinity;
-  
+      
               textSlides.forEach(slide => {
                   const rect = slide.getBoundingClientRect();
                   const slideCenter = rect.left + rect.width / 2;
                   const distance = Math.abs(slideCenter - wrapperCenter);
-  
+      
                   if (distance < smallestDistance) {
                       smallestDistance = distance;
                       bestMatch = slide;
                   }
               });
-  
+      
               return bestMatch;
           }
-  
+      
           function updateText() {
-              const current = getCurrentSlide();
-              if (current && current !== lastVisibleSlide) {
-                  nameElement.textContent = current.dataset.name || 'Unbenannt';
-                  descriptionElement.textContent = current.dataset.description || 'Keine Beschreibung';
-                  specificationElement.textContent = formatSpecification(current.dataset.specification || 'Nicht angegeben');
-                  lastVisibleSlide = current;
-              }
-          }
-  
+            const current = getCurrentSlide();
+            if (current && current !== lastVisibleSlide) {
+                nameElement.textContent = current.dataset.name || 'Unbenannt';
+                descriptionElement.textContent = current.dataset.description || 'Keine Beschreibung';
+                specificationElement.textContent = formatSpecification(current.dataset.specification || 'Nicht angegeben');
+        
+                try {
+                    const components = JSON.parse(current.dataset.components || '[]');
+                    console.log("DATA COMPONENTS:", components);  // Debug-Ausgabe
+                    componentsContainer.innerHTML = formatComponents(components);
+                } catch (e) {
+                    console.error("Fehler beim Parsen von components:", e);
+                    componentsContainer.innerHTML = '<p class="component-item">Komponenten konnten nicht geladen werden</p>';
+                }
+        
+                lastVisibleSlide = current;
+            }
+        }
+        
+          // Initiales Update
           updateText();
           setInterval(updateText, 3000);
       });

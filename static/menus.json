@@ -26,81 +26,11 @@
     "day": "Monday"
   },
   {
-    "id": "64be1218-ca28-4928-8175-acf6663df99e",
-    "filename": "Rinderbolognese-Linsen-Fusilli.png",
-    "name": "Rinderbolognese-Linsen-Fusilli",
-    "description": "Rinderbolognese-Linsen-Fusilli   ab 35g protein pro protion ",
-    "day": "Monday"
-  },
-  {
     "id": "baaf69b2-d461-4a55-9f5b-acee8f8f3359",
     "filename": "ken.mp4",
     "name": "video",
     "description": "video",
     "day": "Tuesday"
-  },
-  {
-    "id": "52c3f430-ab9f-4656-aeb3-0cb5ba548b50",
-    "filename": "Chili-con-Carne-mit-Rindfleisch.png",
-    "name": "Chili-con-Carne-mit-Rindfleisch",
-    "description": "Chili-con-Carne-mit-Rindfleisch   ap 35 g protein pro protion"
-  },
-  {
-    "id": "1e18c69e-e333-402c-b861-357268e0c45d",
-    "filename": "Chili-con-Carne-mit-Rindfleisch.png",
-    "name": "Chili-con-Carne-mit-Rindfleisch",
-    "description": "Chili-con-Carne-mit-Rindfleisch"
-  },
-  {
-    "id": "db0e9b2d-d090-4729-b6e9-2ed86802d34b",
-    "filename": "Roter-Couscous-Zucchini-und-Haehnchen.png",
-    "name": "Roter-Couscous-Zucchini-und-Haehnchen",
-    "description": "Roter-Couscous-Zucchini-und-Haehnchen"
-  },
-  {
-    "id": "75bb9a3d-3dcd-4c63-85fa-e6f8c9f337dc",
-    "filename": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage.png",
-    "name": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage",
-    "description": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage"
-  },
-  {
-    "id": "0d8c6b79-4fc0-49d8-9bfc-b7b36fb78d02",
-    "filename": "Auberginenauflauf-mit-Rindfleisch.png",
-    "name": "Auberginenauflauf-mit-Rindfleisch",
-    "description": "Auberginenauflauf-mit-Rindfleisch"
-  },
-  {
-    "id": "75ef5282-e0a8-4c5b-bf2c-fd4f4206a072",
-    "filename": "Gemuese-Lassagne-mit-Edamame.png",
-    "name": "Gemuese-Lassagne-mit-Edamame",
-    "description": "Gemuese-Lassagne-mit-Edamame "
-  },
-  {
-    "id": "2bf66f87-30e5-4012-bcf5-f697b2a30cea",
-    "filename": "Vegane-Kichererbesen-Masala-Cous-Cous.png",
-    "name": "Vegane-Kichererbesen-Masala-Cous-Cous",
-    "description": "ab 35g eiweiß PRO PROTION ",
-    "specification": "vegan"
-  },
-  {
-    "id": "198b38f2-573d-41ae-8b2f-3c3904d3dc7f",
-    "filename": "Bulgur-Linsen-mit-Rindfleisch.png",
-    "name": "Bulgur-Linsen-mit-Rindfleisch",
-    "description": "Bulgur-Linsen-mit-Rindfleisch",
-    "specification": "high_protein",
-    "components": [
-      "Bulgur",
-      "Linsen",
-      "Rindfleisch"
-    ]
-  },
-  {
-    "id": "749fd49b-f915-49bd-9f1f-b23643f83070",
-    "filename": "Haehnchen-in-Kokossauce-mit-Suesskartoffelpueree.png",
-    "name": "Haehnchen-in-Kokossauce-mit-Suesskartoffelpueree",
-    "description": "Haehnchen-in-Kokossauce-mit-Suesskartoffelpueree",
-    "specification": "low_carbs",
-    "components": []
   },
   {
     "id": "4e6cba74-1d49-48a1-83dc-24ea8fb0eb7c",
@@ -112,6 +42,92 @@
       "kircher",
       "soße",
       "Bulgur"
+    ]
+  },
+  {
+    "id": "0cba5f89-1fd3-4a4c-a7c2-1bb12507b482",
+    "filename": "Chilinudeln-mit-Haehnchen-und-Gemuese.png",
+    "name": "Chilinudeln-mit-Haehnchen-und-Gemuese",
+    "description": "Chilinudeln-mit-Haehnchen-und-Gemuese ab30 g protien pro portion ",
+    "specification": "high_protein",
+    "components": [
+      "nudeln",
+      "hänchen"
+    ]
+  },
+  {
+    "id": "e82acbf6-3e60-4048-90f9-3d580d58d2b3",
+    "filename": "Alaska-Seelachs-in-Sahnesauce-mit-Curryreis.png",
+    "name": "Alaska-Seelachs-in-Sahnesauce-mit-Curryreis",
+    "description": "fisch fillet low carbs eiweis ab 20g pro portion",
+    "specification": "low_carbs",
+    "components": [
+      "curry reis",
+      "seelachs",
+      "sahnsauce"
+    ]
+  },
+  {
+    "id": "a58798af-d0bf-4b9a-9de9-c13f6b601032",
+    "filename": "gemuse_lassagne_mit_edmame_kurbis_und_roten_linsen.jpeg",
+    "name": "gemüse lassagne mit edmame kürbis und roten linsen",
+    "description": "gemüse lassagne mit edmame kürbis und roten linsen",
+    "specification": "vegan",
+    "components": [
+      "Gemüse sauce",
+      "lassagne"
+    ]
+  },
+  {
+    "id": "b23f6f01-4989-4c4f-b3c8-fc2653e180d5",
+    "filename": "Roter-Couscous-Zucchini-und-Haehnchen.png",
+    "name": "Roter-Couscous-Zucchini-und-Haehnchen",
+    "description": "Roter-Couscous-Zucchini-und-Haehnchen ",
+    "specification": "low_carbs",
+    "components": [
+      "couscous",
+      "haenchen"
+    ]
+  },
+  {
+    "id": "a1c74f2c-da9d-42d6-9712-d336994b1aad",
+    "filename": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage.png",
+    "name": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage",
+    "description": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage",
+    "specification": "vegan",
+    "components": [
+      "gemüse",
+      "Ruehrei-Katroffeln"
+    ]
+  },
+  {
+    "id": "bb7ec271-5b80-493b-9ab0-bc4bf30e5995",
+    "filename": "Auberginenauflauf-mit-Rindfleisch.png",
+    "name": "Auberginenauflauf-mit-Rindfleisch",
+    "description": "Auberginenauflauf-mit-Rindfleisch",
+    "specification": "high_protein",
+    "components": [
+      "rindfleisch",
+      "Auberginenauflauf"
+    ]
+  },
+  {
+    "id": "08c3cf20-5a16-4031-9db8-8a894bad1c05",
+    "filename": "Chili-con-Carne-mit-Rindfleisch.png",
+    "name": "Chili-con-Carne-mit-Rindfleisch",
+    "description": "Chili-con-Carne-mit-Rindfleisch",
+    "specification": "vegan",
+    "components": []
+  },
+  {
+    "id": "0c2cc7ec-8868-4295-889b-688d9534fb04",
+    "filename": "Haehnchen-Fajita-Bowl-mit-Reis.png",
+    "name": "Haehnchen-Fajita-Bowl-mit-Reis",
+    "description": "ab 30g protein pro menu",
+    "specification": "high_protein",
+    "components": [
+      "Haehnchen-Fajita",
+      "reis"
     ]
   }
 ]

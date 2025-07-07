@@ -30,7 +30,7 @@ def set_duration():
     session['duration'] = int(duration)
     print("test for duration ",duration)
     return redirect(url_for('admin'))    
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 def index():
     
 
@@ -54,15 +54,21 @@ def index():
                 menus = []
 
     # Finde Menüs für den heutigen Wochentag
+    
     assigned_menus = []
     for a in assignments:
-        if a['day'].lower() == weekday.lower():
-            # Menü-ID aus assignment
-            menu_id = a['menu']['id']
-            # Menü-Objekt aus Menü-Datei finden
-            matching_menu = next((m for m in menus if m['id'] == menu_id), None)
-            if matching_menu:
-                assigned_menus.append(matching_menu)
+        if 'date' in a:
+            # Datum in Wochentag umwandeln
+            try:
+                assignment_date = datetime.strptime(a['date'], '%Y-%m-%d')
+                assignment_weekday = assignment_date.strftime('%A')
+                if assignment_weekday.lower() == weekday.lower():
+                    menu_id = a['menu']['id']
+                    matching_menu = next((m for m in menus if m['id'] == menu_id), None)
+                    if matching_menu:
+                        assigned_menus.append(matching_menu)
+            except ValueError:
+                print(f"Ungültiges Datumsformat in assignment: {a['date']}")
 
     image_extensions = ['jpg', 'jpeg', 'png', 'gif']
 
@@ -470,7 +476,7 @@ def display():
                            video_file=None,  # oder entferne es ganz
                            display_text=current_text,assigned_slides=assigned_slides)
 
-@app.route("/test", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST"])
 def index_test():
     video_filename = None
     duration = session.get('duration', 10)
@@ -538,11 +544,12 @@ def index_test():
 
     # Reduzierte Datenstruktur für das Template
     assigned_slides = [{
-            'filename': m.get('filename', ''),
-            'name': m.get('name', 'Unbenannt'),
-            'description': m.get('description', 'Keine Beschreibung'),
-            'specification': m.get('specification', 'Nicht angegeben')
-        } for m in assigned_menus]
+    'filename': m.get('filename', ''),
+    'name': m.get('name', 'Unbenannt'),
+    'description': m.get('description', 'Keine Beschreibung'),
+    'specification': m.get('specification', 'Nicht angegeben'),
+    'components': m.get('components', [])  # Komponenten als Liste hinzufügen
+    } for m in assigned_menus]
 
     # Ken & Barbie Namen setzen
     ken_name = ken_barbie_data[0]['ken'] if ken_barbie_data else "Ken"
@@ -555,7 +562,7 @@ def index_test():
                 ticker_enabled = settings.get('ticker_enabled', True)
             except json.JSONDecodeError:
                 ticker_enabled = True
-
+    print("Assigned Slides:", assigned_slides)
     return render_template(
         "test.html",
         assigned_slides=assigned_slides,
@@ -580,7 +587,7 @@ def delete_menus():
     if not menu_id:
         return jsonify({"error": "menu_id missing"}), 400
 
-    print("test von menu id ,", menu_id)
+    
 
     # Menüs laden
     with open(MENU_FILE, 'r', encoding='utf-8') as f:
