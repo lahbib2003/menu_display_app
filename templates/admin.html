@@ -227,9 +227,28 @@
         .ticker-toggle-form button:hover {
             background-color: #0056b3;
         }
+        header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 20px 40px;
+            text-align: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 2em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 0 0 10px 10px;
+            letter-spacing: 1px;
+          }
+      
+          @media (max-width: 600px) {
+            header {
+              font-size: 1.5em;
+              padding: 15px 20px;
+            }
+          }
     </style>
 </head>
 <body>
+    <header>{{ " Speisekarten-Management"}}</header>
     <div class="container">
         <!-- Menü Upload -->
         <div class="section">
@@ -508,6 +527,21 @@ document.getElementById('loadData').addEventListener('click', async () => {
     }
 });
 </script>
+<script>
+    // Scroll-Position vor dem Neuladen speichern
+    window.addEventListener("beforeunload", function () {
+      localStorage.setItem("scrollPos", window.scrollY);
+    });
+  
+    // Scroll-Position nach dem Laden wiederherstellen
+    window.addEventListener("load", function () {
+      const scrollPos = localStorage.getItem("scrollPos");
+      if (scrollPos) {
+        window.scrollTo(0, parseInt(scrollPos));
+      }
+    });
+  </script>
+  
 <div class="section">
     <h2>📝 Aktueller Header-Text</h2>
     <form action="{{ url_for('update_header') }}" method="POST" class="header-form">

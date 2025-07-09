@@ -1,6 +1,6 @@
 [
   {
-    "ken": "halllo test",
-    "barbie": "hallo test  2"
+    "ken": "hey süßer worauf hast du bock heute",
+    "barbie": "hey heute gibts was leckers"
   }
 ]

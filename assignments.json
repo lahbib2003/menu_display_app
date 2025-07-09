@@ -162,5 +162,76 @@
         "reis"
       ]
     }
+  },
+  {
+    "menu_id": "4e6cba74-1d49-48a1-83dc-24ea8fb0eb7c",
+    "date": "2025-07-08",
+    "menu": {
+      "id": "4e6cba74-1d49-48a1-83dc-24ea8fb0eb7c",
+      "filename": "Indisches-Kicherebsen-Masala.png",
+      "name": "Indisches-Kicherebsen-Masala",
+      "description": "Indisches-Kicherebsen-Masala",
+      "specification": "vegan",
+      "components": [
+        "kircher",
+        "soße",
+        "Bulgur"
+      ]
+    }
+  },
+  {
+    "menu_id": "0cba5f89-1fd3-4a4c-a7c2-1bb12507b482",
+    "date": "2025-07-09",
+    "menu": {
+      "id": "0cba5f89-1fd3-4a4c-a7c2-1bb12507b482",
+      "filename": "Chilinudeln-mit-Haehnchen-und-Gemuese.png",
+      "name": "Chilinudeln-mit-Haehnchen-und-Gemuese",
+      "description": "Chilinudeln-mit-Haehnchen-und-Gemuese ab30 g protien pro portion ",
+      "specification": "high_protein",
+      "components": [
+        "nudeln",
+        "hänchen"
+      ]
+    }
+  },
+  {
+    "menu_id": "a1c74f2c-da9d-42d6-9712-d336994b1aad",
+    "date": "2025-07-09",
+    "menu": {
+      "id": "a1c74f2c-da9d-42d6-9712-d336994b1aad",
+      "filename": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage.png",
+      "name": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage",
+      "description": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage",
+      "specification": "vegan",
+      "components": [
+        "gemüse",
+        "Ruehrei-Katroffeln"
+      ]
+    }
+  },
+  {
+    "menu_id": "b23f6f01-4989-4c4f-b3c8-fc2653e180d5",
+    "date": "2025-07-09",
+    "menu": {
+      "id": "b23f6f01-4989-4c4f-b3c8-fc2653e180d5",
+      "filename": "Roter-Couscous-Zucchini-und-Haehnchen.png",
+      "name": "Roter-Couscous-Zucchini-und-Haehnchen",
+      "description": "Roter-Couscous-Zucchini-und-Haehnchen ",
+      "specification": "low_carbs",
+      "components": [
+        "couscous",
+        "haenchen"
+      ]
+    }
+  },
+  {
+    "menu_id": "353e1994-29a1-4917-9684-13f1460d56db",
+    "date": "2025-07-09",
+    "menu": {
+      "id": "353e1994-29a1-4917-9684-13f1460d56db",
+      "filename": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen.png",
+      "name": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen",
+      "description": "Lachs-in-Senf-Schmandsauce-Reis-Bohnen"
+    }
   }
 ]
