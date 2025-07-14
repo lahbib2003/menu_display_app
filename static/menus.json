@@ -129,5 +129,16 @@
       "Haehnchen-Fajita",
       "reis"
     ]
+  },
+  {
+    "id": "e07f1ad3-08e6-45f1-b5a1-83492f16bf7b",
+    "filename": "Bulgur_linsen_mit_rindfleish__Brokoli.jpeg",
+    "name": "Bulgur &linsen mit rindfleish , Brokoli",
+    "description": "Bulgur &linsen mit rindfleish , Brokoli ab 35 g eiwewis pro portiom",
+    "specification": "high_protein",
+    "components": [
+      "linsen ",
+      "bulgur "
+    ]
   }
 ]
