@@ -11,7 +11,17 @@
       overflow: hidden;
       font-family: 'KorolevRounded';
     }
+.logo {
+    position: absolute;
+    top: 30px;
+    left: 15px;
+    animation: bounceIn 2s ease;
+    z-index: 2;
+}
 
+.logo img {
+    height: 30px;
+}
     /* Hintergrundvideo */
     #bg-video {
       position: fixed;
@@ -402,128 +412,104 @@
         <p>Für weitere Infos – jetzt scannen!</p>
     </div>
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-          const textSlides = document.querySelectorAll('.image-slide');
-          const nameElement = document.getElementById('slide-name');
-          const descriptionElement = document.getElementById('slide-description');
-          const specificationElement = document.getElementById('slide-specification').querySelector('span');
-          const componentsContainer = document.getElementById('slide-components');
-      
-          let lastVisibleSlide = null;
-      
-          // Funktion zur Formatierung der Spezifikation
-          const formatSpecification = (spec) => {
-              const specMap = {
-                  'vegan': 'Vegan',
-                  'high_protein': 'High Protein',
-                  'low_carbs': 'Low Carbs',
-                  'none': 'Keine Spezifikation',
-                  'Nicht angegeben': 'Nicht angegeben'
-              };
-              return specMap[spec] || spec;
-          };
-      
-          // Funktion zur Formatierung der Komponenten
-          const formatComponents = (components) => {
-              if (!components || components.length === 0) {
-                  return '<p class="component-item">Keine Komponenten</p>';
-              }
-              return components
-                  .map((component, index) => `<p class="component-item">#Komponente ${index + 1}: ${component}</p>`)
-                  .join('');
-          };
-      
-          function getCurrentSlide() {
-              const wrapper = document.getElementById('wrapper');
-              const wrapperRect = wrapper.getBoundingClientRect();
-              const wrapperCenter = wrapperRect.left + wrapperRect.width / 2;
-      
-              let bestMatch = null;
-              let smallestDistance = Infinity;
-      
-              textSlides.forEach(slide => {
-                  const rect = slide.getBoundingClientRect();
-                  const slideCenter = rect.left + rect.width / 2;
-                  const distance = Math.abs(slideCenter - wrapperCenter);
-      
-                  if (distance < smallestDistance) {
-                      smallestDistance = distance;
-                      bestMatch = slide;
-                  }
-              });
-      
-              return bestMatch;
-          }
-      
-          function updateText() {
-            const current = getCurrentSlide();
-            if (current && current !== lastVisibleSlide) {
-                nameElement.textContent = current.dataset.name || 'Unbenannt';
-                descriptionElement.textContent = current.dataset.description || 'Keine Beschreibung';
-                specificationElement.textContent = formatSpecification(current.dataset.specification || 'Nicht angegeben');
-        
-                try {
-                    const components = JSON.parse(current.dataset.components || '[]');
-                    console.log("DATA COMPONENTS:", components);  // Debug-Ausgabe
-                    componentsContainer.innerHTML = formatComponents(components);
-                } catch (e) {
-                    console.error("Fehler beim Parsen von components:", e);
-                    componentsContainer.innerHTML = '<p class="component-item">Komponenten konnten nicht geladen werden</p>';
-                }
-        
-                lastVisibleSlide = current;
-            }
+   document.addEventListener('DOMContentLoaded', () => {
+    const textSlides = document.querySelectorAll('.image-slide');
+    const nameElement = document.getElementById('slide-name');
+    const descriptionElement = document.getElementById('slide-description');
+    const specificationElement = document.getElementById('slide-specification').querySelector('span');
+    const componentsContainer = document.getElementById('slide-components');
+
+    const formatSpecification = (spec) => {
+        const specMap = {
+            'vegan': 'Vegan',
+            'high_protein': 'High Protein',
+            'low_carbs': 'Low Carbs',
+            'none': 'Keine Spezifikation',
+            'Nicht angegeben': 'Nicht angegeben'
+        };
+        return specMap[spec] || spec;
+    };
+
+    const formatComponents = (components) => {
+        if (!components || components.length === 0) {
+            return '<p class="component-item">Keine Komponenten</p>';
         }
-        
-          // Initiales Update
-          updateText();
-          setInterval(updateText, 3000);
-      });
+        return components
+            .map((component, index) => `<p class="component-item">#Komponente ${index + 1}: ${component}</p>`)
+            .join('');
+    };
+
+    // Funktion, um den Text basierend auf centerIndex zu aktualisieren
+    function updateTextByIndex(index) {
+        const current = textSlides[index];
+        nameElement.textContent = current.dataset.name || 'Unbenannt';
+        descriptionElement.textContent = current.dataset.description || 'Keine Beschreibung';
+        specificationElement.textContent = formatSpecification(current.dataset.specification || 'Nicht angegeben');
+
+        try {
+            const components = JSON.parse(current.dataset.components || '[]');
+            componentsContainer.innerHTML = formatComponents(components);
+        } catch (e) {
+            console.error("Fehler beim Parsen von components:", e);
+            componentsContainer.innerHTML = '<p class="component-item">Komponenten konnten nicht geladen werden</p>';
+        }
+    }
+
+    // Exporte die Funktion für Zugriff vom Rotations-Script
+    window.updateTextByIndex = updateTextByIndex;
+
+    // Initialer Text für das erste Bild
+    updateTextByIndex(0);
+});
+
       </script>
   
   <script>
-    // Für die Rotation: eigene Variable
-    const rotatingSlides = document.querySelectorAll('.image-slide');
-    const radius = 500;
-    const centerX  = 300;
-    const centerY = 300;
-    const total = rotatingSlides.length;
-    let rotation = 0;
-    let centerIndex = 0;
-  
-    function updatePositions() {
-      for (let i = 0; i < total; i++) {
+const rotatingSlides = document.querySelectorAll('.image-slide');
+const radius = 500;
+const centerX  = 300;
+const centerY = 300;
+const total = rotatingSlides.length;
+let rotation = 0;
+let centerIndex = 0;
+
+function updatePositions() {
+    for (let i = 0; i < total; i++) {
         if (i === centerIndex) {
-          rotatingSlides[i].classList.add('center');
-          rotatingSlides[i].style.left = `${centerX - rotatingSlides[i].offsetWidth / 2}px`;
-          rotatingSlides[i].style.top = `${centerY - rotatingSlides[i].offsetHeight / 2}px`;
-          rotatingSlides[i].style.transform = 'rotate(0deg)';
+            rotatingSlides[i].classList.add('center');
+            rotatingSlides[i].style.left = `${centerX - rotatingSlides[i].offsetWidth / 2}px`;
+            rotatingSlides[i].style.top = `${centerY - rotatingSlides[i].offsetHeight / 2}px`;
+            rotatingSlides[i].style.transform = 'rotate(0deg)';
         } else {
-          rotatingSlides[i].classList.remove('center');
-          const posIndex = i < centerIndex ? i : i - 1;
-          const angle = rotation + (posIndex * (360 / (total - 1)));
-          const rad = angle * Math.PI / 180;
-          const x = centerX + radius * Math.cos(rad);
-          const y = centerY + radius * Math.sin(rad);
-  
-          rotatingSlides[i].style.left = `${x - rotatingSlides[i].offsetWidth / 2}px`;
-          rotatingSlides[i].style.top = `${y - rotatingSlides[i].offsetHeight / 2}px`;
-          rotatingSlides[i].style.transform = `rotate(${angle}deg)`;
+            rotatingSlides[i].classList.remove('center');
+            const posIndex = i < centerIndex ? i : i - 1;
+            const angle = rotation + (posIndex * (360 / (total - 1)));
+            const rad = angle * Math.PI / 180;
+            const x = centerX + radius * Math.cos(rad);
+            const y = centerY + radius * Math.sin(rad);
+
+            rotatingSlides[i].style.left = `${x - rotatingSlides[i].offsetWidth / 2}px`;
+            rotatingSlides[i].style.top = `${y - rotatingSlides[i].offsetHeight / 2}px`;
+            rotatingSlides[i].style.transform = `rotate(${angle}deg)`;
         }
-      }
     }
-  
-    function animate() {
-      rotation = (rotation + 1) % 360;
-      updatePositions();
-      requestAnimationFrame(animate);
+}
+
+function animate() {
+    rotation = (rotation + 1) % 360;
+    updatePositions();
+    requestAnimationFrame(animate);
+}
+
+setInterval(() => {
+    centerIndex = (centerIndex + 1) % total;
+    if (window.updateTextByIndex) {
+        window.updateTextByIndex(centerIndex);
     }
-  
-    setInterval(() => {
-      centerIndex = (centerIndex + 1) % total;
-    }, 10000);
-  
-    animate();
+}, 10000); // alle 10 Sekunden
+
+animate();
+
   </script>
   <!-- Ticker -->
   {% if ticker_enabled %}
@@ -539,7 +525,10 @@
 </div>
   {% endif %}
   
-  
+   <!-- Logo -->
+    <div class="logo">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+    </div>
   
 </body>
 </html>

@@ -373,5 +373,57 @@
         "sahnsauce"
       ]
     }
+  },
+  {
+    "menu_id": "0f8a4a0c-4abb-4465-b11b-4786043f7a2e",
+    "date": "2025-08-25",
+    "menu": {
+      "id": "0f8a4a0c-4abb-4465-b11b-4786043f7a2e",
+      "filename": "Rindfleisch-Kartoffeln-Weisskohl.png",
+      "name": "Rindfleisch-Kartoffeln-Weisskohl",
+      "description": "Rindfleisch-Kartoffeln-Weisskohl"
+    }
+  },
+  {
+    "menu_id": "a1c74f2c-da9d-42d6-9712-d336994b1aad",
+    "date": "2025-08-25",
+    "menu": {
+      "id": "a1c74f2c-da9d-42d6-9712-d336994b1aad",
+      "filename": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage.png",
+      "name": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage",
+      "description": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage",
+      "specification": "vegan",
+      "components": [
+        "gemüse",
+        "Ruehrei-Katroffeln"
+      ]
+    }
+  },
+  {
+    "menu_id": "08c3cf20-5a16-4031-9db8-8a894bad1c05",
+    "date": "2025-08-25",
+    "menu": {
+      "id": "08c3cf20-5a16-4031-9db8-8a894bad1c05",
+      "filename": "Chili-con-Carne-mit-Rindfleisch.png",
+      "name": "Chili-con-Carne-mit-Rindfleisch",
+      "description": "Chili-con-Carne-mit-Rindfleisch",
+      "specification": "vegan",
+      "components": []
+    }
+  },
+  {
+    "menu_id": "a58798af-d0bf-4b9a-9de9-c13f6b601032",
+    "date": "2025-08-25",
+    "menu": {
+      "id": "a58798af-d0bf-4b9a-9de9-c13f6b601032",
+      "filename": "gemuse_lassagne_mit_edmame_kurbis_und_roten_linsen.jpeg",
+      "name": "gemüse lassagne mit edmame kürbis und roten linsen",
+      "description": "gemüse lassagne mit edmame kürbis und roten linsen",
+      "specification": "vegan",
+      "components": [
+        "Gemüse sauce",
+        "lassagne"
+      ]
+    }
   }
 ]

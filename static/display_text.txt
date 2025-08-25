@@ -1,6 +1,6 @@
 [
   {
-    "ken": "hello im testing and youu alles ok",
-    "barbie": "hello im testing and youu alles ok"
+    "ken": "Hallo Ihr Lieben alles cool",
+    "barbie": "worauf Habt ihr Bock heute"
   }
 ]
