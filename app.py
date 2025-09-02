@@ -10,6 +10,8 @@ app = Flask(__name__)
 import json  # Ganz oben ergänzen
 
 import uuid
+
+
 MENU_FILE = "static/menus.json"  # Neue globale Variable
 app.secret_key = 'supergeheim'  # Für Session
 UPLOAD_FOLDER = 'static/uploads'
