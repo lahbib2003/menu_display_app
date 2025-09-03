@@ -181,5 +181,20 @@
         "SPINAT; GEMUSE "
       ]
     }
+  },
+  {
+    "menu_id": "a1c74f2c-da9d-42d6-9712-d336994b1aad",
+    "date": "2025-09-03",
+    "menu": {
+      "id": "a1c74f2c-da9d-42d6-9712-d336994b1aad",
+      "filename": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage.png",
+      "name": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage",
+      "description": "Ruehrei-Katroffeln-Brokkoli-Salatbeilage",
+      "specification": "vegan",
+      "components": [
+        "gemüse",
+        "Ruehrei-Katroffeln"
+      ]
+    }
   }
 ]
